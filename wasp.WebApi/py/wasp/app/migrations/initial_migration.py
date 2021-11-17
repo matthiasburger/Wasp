@@ -20,7 +20,7 @@ class CreateBaseDatatables(DtpMigrationPackage):
             'IsNullable': False,
             'IdentitySeed': 1,
             'IdentityIncrement': 1
-        };
+        }
         sqlid_column = {
             'DataTable': 'DataTable',
             'Name': 'SqlId',
@@ -31,7 +31,7 @@ class CreateBaseDatatables(DtpMigrationPackage):
             'IsVirtual': False,
             'ApplicationType': 'string',
             'IsNullable': False
-        };
+        }
         name_column = {
             'DataTable': 'DataTable',
             'Name': 'Name',
@@ -42,7 +42,7 @@ class CreateBaseDatatables(DtpMigrationPackage):
             'IsVirtual': False,
             'ApplicationType': 'string',
             'IsNullable': False
-        };
+        }
 
         (data_table_dtp, primary_key_dtps, relation_dtp) = self.create_datatable(datatable, (id_column,))
         name_column_dtp = self.create_dataitem(name_column)
@@ -73,7 +73,7 @@ class CreateBaseDatatables(DtpMigrationPackage):
             'IsNullable': False,
             'IdentitySeed': 1,
             'IdentityIncrement': 1
-        };
+        }
 
         dataitem_datatable_column = {
             'DataTable': 'DataItem',
@@ -84,7 +84,7 @@ class CreateBaseDatatables(DtpMigrationPackage):
             'IsVirtual': False,
             'ApplicationType': 'long',
             'IsNullable': False
-        };
+        }
         dataitem_name_column = {
             'DataTable': 'DataItem',
             'Name': 'Name',
@@ -95,7 +95,7 @@ class CreateBaseDatatables(DtpMigrationPackage):
             'IsVirtual': False,
             'ApplicationType': 'string',
             'IsNullable': False
-        };
+        }
         dataitem_sqlid_column = {
             'DataTable': 'DataItem',
             'Name': 'SQL Id',
@@ -106,7 +106,7 @@ class CreateBaseDatatables(DtpMigrationPackage):
             'IsVirtual': False,
             'ApplicationType': 'string',
             'IsNullable': False
-        };
+        }
         dataitem_pythonid_column = {
             'DataTable': 'DataItem',
             'Name': 'Python Id',
@@ -117,7 +117,7 @@ class CreateBaseDatatables(DtpMigrationPackage):
             'IsVirtual': False,
             'ApplicationType': 'string',
             'IsNullable': False
-        };
+        }
         dataitem_dbtype_column = {
             'DataTable': 'DataItem',
             'Name': 'DB-Type',
@@ -128,7 +128,7 @@ class CreateBaseDatatables(DtpMigrationPackage):
             'IsVirtual': False,
             'ApplicationType': 'string',
             'IsNullable': False
-        };
+        }
         dataitem_dblength_column = {
             'DataTable': 'DataItem',
             'Name': 'DB-Length',
@@ -138,7 +138,7 @@ class CreateBaseDatatables(DtpMigrationPackage):
             'IsVirtual': False,
             'ApplicationType': 'int',
             'IsNullable': False
-        };
+        }
         dataitem_precision_column = {
             'DataTable': 'DataItem',
             'Name': 'DB-Precision',
@@ -148,7 +148,7 @@ class CreateBaseDatatables(DtpMigrationPackage):
             'IsVirtual': False,
             'ApplicationType': 'int',
             'IsNullable': False
-        };
+        }
         dataitem_scale_column = {
             'DataTable': 'DataItem',
             'Name': 'DB-Scale',
@@ -158,7 +158,7 @@ class CreateBaseDatatables(DtpMigrationPackage):
             'IsVirtual': False,
             'ApplicationType': 'int',
             'IsNullable': False
-        };
+        }
         dataitem_isvirtual_column = {
             'DataTable': 'DataItem',
             'Name': 'Is Virtual',
@@ -168,7 +168,7 @@ class CreateBaseDatatables(DtpMigrationPackage):
             'IsVirtual': False,
             'ApplicationType': 'bool',
             'IsNullable': False
-        };
+        }
         dataitem_applicationtype_column = {
             'DataTable': 'DataItem',
             'Name': 'Application-Type',
@@ -179,7 +179,7 @@ class CreateBaseDatatables(DtpMigrationPackage):
             'IsVirtual': False,
             'ApplicationType': 'string',
             'IsNullable': False
-        };
+        }
         dataitem_isnullable_column = {
             'DataTable': 'DataItem',
             'Name': 'Is Nullable',
@@ -189,7 +189,7 @@ class CreateBaseDatatables(DtpMigrationPackage):
             'IsVirtual': False,
             'ApplicationType': 'bool',
             'IsNullable': False
-        };
+        }
         dataitem_sqldefaultvalue_column = {
             'DataTable': 'DataItem',
             'Name': 'SQL Defaultvalue',
@@ -200,7 +200,7 @@ class CreateBaseDatatables(DtpMigrationPackage):
             'IsVirtual': False,
             'ApplicationType': 'string',
             'IsNullable': False
-        };
+        }
 
         (dataitem_table_dtp, dataitem_primary_key_dtps, dataitem_relation_dtp) = self.create_datatable(dataitemtable, (dataitem_id_column,))
         dtp_records_to_create.append(dataitem_table_dtp)
@@ -241,7 +241,7 @@ class CreateBaseDatatables(DtpMigrationPackage):
             'IsNullable': False,
             'IdentitySeed': 1,
             'IdentityIncrement': 1
-        };
+        }
 
         relationship_dataitem_column = {
             'DataTable': 'Relationship',
@@ -252,7 +252,7 @@ class CreateBaseDatatables(DtpMigrationPackage):
             'IsVirtual': False,
             'ApplicationType': 'long',
             'IsNullable': False
-        };
+        }
         relationship_foreignkey_column = {
             'DataTable': 'Relationship',
             'Name': 'Foreign-Key Id',
@@ -262,7 +262,7 @@ class CreateBaseDatatables(DtpMigrationPackage):
             'IsVirtual': False,
             'ApplicationType': 'long',
             'IsNullable': True
-        };
+        }
         relationship_name_column = {
             'DataTable': 'Relationship',
             'Name': 'Name',
@@ -273,7 +273,7 @@ class CreateBaseDatatables(DtpMigrationPackage):
             'IsVirtual': False,
             'ApplicationType': 'long',
             'IsNullable': False
-        };
+        }
         
         (relationship_table_dtp, relationship_primary_key_dtps, relationship_relation_dtp) = self.create_datatable(relationshiptable, (relationship_id_column,))
         dtp_records_to_create.append(relationship_table_dtp)
