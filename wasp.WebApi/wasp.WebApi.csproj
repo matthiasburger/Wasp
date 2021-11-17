@@ -1,0 +1,56 @@
+<Project Sdk="Microsoft.NET.Sdk.Web">
+
+  <PropertyGroup>
+    <TargetFramework>net5.0</TargetFramework>
+    <NoWin32Manifest>true</NoWin32Manifest>
+    <LangVersion>9.0</LangVersion>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <None Remove="py\wasp\app\migrations\initial_migration.py" />
+    <None Remove="py\wasp\app\migrations\__init__.py" />
+    <None Remove="py\wasp\app\__init__.py" />
+    <None Remove="py\wasp\core\dependency_injection.py" />
+    <None Remove="py\wasp\core\migration\migration_package.py" />
+    <None Remove="py\wasp\core\migration\__init__.py" />
+    <None Remove="py\wasp\__init__.py" />
+    <None Remove="py\__init__.py" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <Content Include="py\wasp\app\migrations\initial_migration.py">
+      <SubType>Code</SubType>
+    </Content>
+    <Content Include="py\wasp\app\migrations\__init__.py">
+      <SubType>Code</SubType>
+    </Content>
+    <Content Include="py\wasp\app\__init__.py">
+      <SubType>Code</SubType>
+    </Content>
+    <Content Include="py\wasp\core\migration\migration_package.py">
+      <SubType>Code</SubType>
+    </Content>
+    <Content Include="py\wasp\core\migration\__init__.py">
+      <SubType>Code</SubType>
+    </Content>
+    <Content Include="py\wasp\core\dependency_injection.py">
+      <SubType>Code</SubType>
+    </Content>
+    <Content Include="py\wasp\core\__init__.py">
+      <SubType>Code</SubType>
+    </Content>
+    <Content Include="py\wasp\__init__.py">
+      <SubType>Code</SubType>
+    </Content>
+    <Content Include="py\__init__.py" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <PackageReference Include="DevExpress.Xpo" Version="20.1.6" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\pythonnet-master\src\runtime\Python.Runtime.csproj" />
+  </ItemGroup>
+
+</Project>
