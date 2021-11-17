@@ -1,6 +1,4 @@
-﻿using System.Threading.Tasks;
-
-using wasp.WebApi.Services.DatabaseAccess;
+﻿using wasp.WebApi.Services.DatabaseAccess;
 
 namespace wasp.WebApi.Services.DataDefinition
 {
