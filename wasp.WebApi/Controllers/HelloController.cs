@@ -13,19 +13,15 @@ namespace wasp.WebApi.Controllers
     public class HelloController : ControllerBase
     {
         private readonly IPythonEngine _pythonEngine;
-        private readonly IDiContainer _diContainer;
 
-        public HelloController(IDiContainer diContainer, IPythonEngine pythonEngine)
+        public HelloController(IPythonEngine pythonEngine)
         {
-            _diContainer = diContainer;
             _pythonEngine = pythonEngine;
         }
 
         [HttpGet]
         public ActionResult Get()            
         {
-            _pythonEngine.SetSearchPath(new List<string> { "./py/" });
-            _pythonEngine.Initialize(_diContainer);
             _pythonEngine.ExecuteCommand(@"
 from wasp.app.migrations.initial_migration import CreateBaseDatatables
 

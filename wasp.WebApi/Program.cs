@@ -4,6 +4,8 @@ using System.Diagnostics.CodeAnalysis;
 using Microsoft.AspNetCore;
 using Microsoft.AspNetCore.Hosting;
 
+using Serilog;
+
 using wasp.WebApi.Services.Configuration;
 using wasp.WebApi.Services.Environment;
 
@@ -15,23 +17,29 @@ namespace wasp.WebApi
         private static readonly IEnvironmentDiscovery EnvironmentDiscovery = new EnvironmentDiscovery();
         private static readonly IConfigurationService ConfigurationService = new ConfigurationService();
         
-        public static void Main(string[] args)
+        public static int Main(string[] args)
         {
+            Log.Logger = new LoggerConfiguration()
+                .ReadFrom.Configuration(ConfigurationService.GetPlatformAgnosticConfig(args))
+                .Enrich.FromLogContext()
+                .CreateLogger();
+            
+            Log.Information($"Starting {nameof(wasp)} web host...");
             CreateWebHostBuilder(args).Build().Run();
+            return 0;
         }
 
         private static IWebHostBuilder CreateWebHostBuilder(string[] args)
         {
             if (EnvironmentDiscovery.IsDocker)
-            {
-                Console.WriteLine("Running inside Docker");
-            }
+                Log.Information("Running inside Docker");
 
             return WebHost
                 .CreateDefaultBuilder(args)
                 .UseConfiguration(ConfigurationService.GetPlatformAgnosticConfig(args))
                 .UseUrls(EnvironmentDiscovery.IsDocker ? "http://*:80" : "http://localhost:8000")
-                .UseStartup<Startup>();
+                .UseStartup<Startup>()
+                .UseSerilog();;
         }
     }
 }
