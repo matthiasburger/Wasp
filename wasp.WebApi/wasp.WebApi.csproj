@@ -46,11 +46,12 @@
   </ItemGroup>
 
   <ItemGroup>
-    <PackageReference Include="DevExpress.Xpo" Version="20.1.6" />
+    <ProjectReference Include="..\pythonnet-master\src\runtime\Python.Runtime.csproj" />
   </ItemGroup>
 
   <ItemGroup>
-    <ProjectReference Include="..\pythonnet-master\src\runtime\Python.Runtime.csproj" />
+    <PackageReference Include="IronSphere.Extensions" Version="21.7.0" />
+    <PackageReference Include="System.Data.SqlClient" Version="4.8.3" />
   </ItemGroup>
 
 </Project>

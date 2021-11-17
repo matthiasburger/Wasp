@@ -1,21 +1,25 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Data.SqlClient;
-using System.Linq;
-using System.Threading.Tasks;
+﻿using System.Data.SqlClient;
+
+using Microsoft.Extensions.Configuration;
+
+using wasp.WebApi.Services.Configuration;
 
 namespace wasp.WebApi.Services.DatabaseAccess
 {
-    public interface IDatabaseService
-    {
-        int ExecuteQuery(string queryString);
-    }
-
     public class DatabaseService : IDatabaseService
     {
+        private readonly IConfiguration _configuration;
+        
+        public DatabaseService(IConfiguration configuration)
+        {
+            _configuration = configuration;
+        }
+        
         public int ExecuteQuery(string queryString)
         {
-            string connectionString = @"Server=(localdb)\mssqllocaldb;Database=wasp_test;Trusted_Connection=True;MultipleActiveResultSets=true";
+            PythonSettings pythonSettings = _configuration.GetSection(PythonSettings.SectionName).Get<PythonSettings>();
+
+            string connectionString = _configuration.GetConnectionString("WaspSqlServerConnectionString");
 
             using SqlConnection connection = new(connectionString);
             using SqlCommand command = new(queryString, connection);

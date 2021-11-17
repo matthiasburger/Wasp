@@ -1,27 +1,37 @@
 using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
+using System.Diagnostics.CodeAnalysis;
 
+using Microsoft.AspNetCore;
 using Microsoft.AspNetCore.Hosting;
-using Microsoft.Extensions.Configuration;
-using Microsoft.Extensions.Hosting;
-using Microsoft.Extensions.Logging;
+
+using wasp.WebApi.Services.Configuration;
+using wasp.WebApi.Services.Environment;
 
 namespace wasp.WebApi
 {
+    [SuppressMessage("ReSharper", "ClassNeverInstantiated.Global")]
     public class Program
     {
+        private static readonly IEnvironmentDiscovery EnvironmentDiscovery = new EnvironmentDiscovery();
+        private static readonly IConfigurationService ConfigurationService = new ConfigurationService();
+        
         public static void Main(string[] args)
         {
-            CreateHostBuilder(args).Build().Run();
+            CreateWebHostBuilder(args).Build().Run();
         }
 
-        public static IHostBuilder CreateHostBuilder(string[] args) =>
-            Host.CreateDefaultBuilder(args)
-                .ConfigureWebHostDefaults(webBuilder =>
-                {
-                    webBuilder.UseStartup<Startup>();
-                });
+        private static IWebHostBuilder CreateWebHostBuilder(string[] args)
+        {
+            if (EnvironmentDiscovery.IsDocker)
+            {
+                Console.WriteLine("Running inside Docker");
+            }
+
+            return WebHost
+                .CreateDefaultBuilder(args)
+                .UseConfiguration(ConfigurationService.GetPlatformAgnosticConfig(args))
+                .UseUrls(EnvironmentDiscovery.IsDocker ? "http://*:80" : "http://localhost:8000")
+                .UseStartup<Startup>();
+        }
     }
 }

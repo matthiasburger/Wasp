@@ -12,7 +12,6 @@
       "commandName": "IISExpress",
       "launchBrowser": true,
       "environmentVariables": {
-        "PYTHONNET_PYDLL": "C:\\Users\\Matthias Burger\\AppData\\Local\\Programs\\Python\\Python38\\Python38.dll",
         "ASPNETCORE_ENVIRONMENT": "Development"
       }
     },
