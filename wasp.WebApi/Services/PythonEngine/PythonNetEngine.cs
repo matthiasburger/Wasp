@@ -1,48 +1,65 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Diagnostics.CodeAnalysis;
 using System.IO;
 using System.Linq;
 
 using Python.Runtime;
+
+using wasp.WebApi.Services.PythonLogger;
 
 namespace wasp.WebApi.Services.PythonEngine
 {
     public class PythonNetEngine : IPythonEngine, IDisposable
     {
         private readonly Lazy<PyModule> _scope;
+        private readonly IDiContainer _diContainer;
+        private readonly IPythonLogger _pythonLogger;
 
-        public PythonNetEngine()
+        public PythonNetEngine(IDiContainer diContainer, IPythonLogger pythonLogger)
         {
             _scope = new Lazy<PyModule>(Py.CreateScope);
+
+            _pythonLogger = pythonLogger;
+            _setupLogger();
+
+            SetSearchPath(new List<string> { "./py/" });
+            _diContainer = diContainer;
+            _initialize();
         }
 
         public void Dispose()
         {
-            // _scope.Value.Dispose();
             GC.SuppressFinalize(this);
         }
 
+        [SuppressMessage("ReSharper", "RedundantCatchClause", Justification = "catch clause is in DEBUG different")]
         public string ExecuteCommand(string command)
         {
-            string result = "OK";
+            string result;
             try
             {
                 using (Py.GIL())
                 {
                     PyObject pyCompile = Python.Runtime.PythonEngine.Compile(command);
                     _scope.Value.Execute(pyCompile);
+                    
+                    result = _pythonLogger.ReadStream();
+                    _pythonLogger.flush();
                 }
             }
-            catch (Exception ex)
+            #if DEBUG
+            catch (PythonException)
             {
-                #if DEBUG
-                Console.WriteLine(">" + command + "<");
-
-                result = $"Trace: \n{ex.StackTrace} " + "\n" +
-                         $"Message: \n {ex.Message}" + "\n";
-                Console.WriteLine(result);
-                #endif
+                throw;
             }
+            #else
+            catch (PythonException ex)
+            {
+                result = ex.ToString();
+                Console.Error.WriteLine(ex.ToString());
+            }
+            #endif
 
             return result;
         }
@@ -54,6 +71,8 @@ namespace wasp.WebApi.Services.PythonEngine
             ExecuteCommand(initScript);
         }
 
+        private void _initialize() => Initialize(_diContainer);
+
         public IList<string> SearchPaths()
         {
             List<string> pythonPaths = new();
@@ -62,8 +81,7 @@ namespace wasp.WebApi.Services.PythonEngine
                 dynamic sys = Py.Import("sys");
                 foreach (PyObject path in sys.path)
                 {
-                    string s = path.ToString();
-                    pythonPaths.Add(s);
+                    pythonPaths.Add(path.ToString());
                 }
             }
 
@@ -78,7 +96,7 @@ namespace wasp.WebApi.Services.PythonEngine
             {
                 string src = $@"
 import sys
-sys.path.append({string.Join(",", searchPaths.Select(x=>$"'{x}'").ToArray())})
+sys.path.append({string.Join(",", searchPaths.Select(x => $"'{x}'").ToArray())})
 ";
 
                 PyObject pyCompile = Python.Runtime.PythonEngine.Compile(src);
@@ -92,6 +110,20 @@ sys.path.append({string.Join(",", searchPaths.Select(x=>$"'{x}'").ToArray())})
             {
                 _scope.Value.Set(name, value.ToPython());
             }
+        }
+
+        private void _setupLogger()
+        {
+            SetVariable("Logger", (PythonLogger.PythonLogger)_pythonLogger);
+            const string loggerSrc = @"
+import sys
+from io import StringIO
+sys.stdout = Logger
+sys.stdout.flush()
+sys.stderr = Logger
+sys.stderr.flush()
+";
+            ExecuteCommand(loggerSrc);
         }
     }
 }

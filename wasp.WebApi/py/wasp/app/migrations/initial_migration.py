@@ -4,6 +4,8 @@ class CreateBaseDatatables(DtpMigrationPackage):
 
     def up(self):
 
+        print('applying migration!!!!')
+
         datatable  = {
             'SqlId': 'DataTable',
             'Name': 'DataTable'

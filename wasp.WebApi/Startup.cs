@@ -5,8 +5,11 @@ using Microsoft.AspNetCore.Hosting;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
+using Microsoft.Extensions.Logging;
 
 using Python.Runtime;
+
+using Serilog;
 
 using wasp.WebApi.Services;
 using wasp.WebApi.Services.Configuration;
@@ -14,6 +17,7 @@ using wasp.WebApi.Services.DatabaseAccess;
 using wasp.WebApi.Services.DataDefinition;
 using wasp.WebApi.Services.Environment;
 using wasp.WebApi.Services.PythonEngine;
+using wasp.WebApi.Services.PythonLogger;
 
 namespace wasp.WebApi
 {
@@ -35,21 +39,12 @@ namespace wasp.WebApi
         {
             services.Configure<PythonSettings>(_configuration.GetSection("PythonSettings"));
 
-            
-            PythonSettings pythonSettings = _configuration.GetSection(PythonSettings.SectionName).Get<PythonSettings>();
-            Environment.SetEnvironmentVariable(@"PYTHONNET_PYDLL",pythonSettings.PythonDll);
-            Runtime.PythonDLL = pythonSettings.PythonDll;
-            
-            Environment.SetEnvironmentVariable(@"PATH", pythonSettings.Path, EnvironmentVariableTarget.Process);
-            Environment.SetEnvironmentVariable(@"PYTHONHOME", pythonSettings.Path, EnvironmentVariableTarget.Process);
-            Environment.SetEnvironmentVariable(@"PYTHONPATH", $"{pythonSettings.Path}\\Lib\\site-packages;{pythonSettings.Path}\\Lib", EnvironmentVariableTarget.Process);
-            
-            PythonEngine.Initialize();
-            threadState = PythonEngine.BeginAllowThreads();
+            threadState = services.AddPython(_configuration);
 
             services.AddControllers();
 
             services.AddTransient<IDiContainer, DiContainer>();
+            services.AddTransient<IPythonLogger, PythonLogger>();
             services.AddTransient<IPythonEngine, PythonNetEngine>();
             services.AddTransient<IDatabaseService, DatabaseService>();
             services.AddTransient<IDataDefinitionService, SqlServerDataDefinitionService>();
@@ -57,7 +52,7 @@ namespace wasp.WebApi
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
-        public void Configure(IApplicationBuilder app, IWebHostEnvironment env, IHostApplicationLifetime applicationLifetime)
+        public void Configure(IApplicationBuilder app, IWebHostEnvironment env, ILoggerFactory loggerFactory, IHostApplicationLifetime applicationLifetime)
         {
             if (env.IsDevelopment())
             {
@@ -71,8 +66,9 @@ namespace wasp.WebApi
                 app.UseHsts();
             }
             
+            loggerFactory.AddSerilog();
+            
             app.UseRouting();
-
             app.UseAuthorization();
 
             app.UseEndpoints(endpoints =>
