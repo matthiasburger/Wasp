@@ -1,5 +1,4 @@
-﻿
-using Python.Runtime;
+﻿using Python.Runtime;
 
 namespace wasp.WebApi.Services.DataDefinition
 {

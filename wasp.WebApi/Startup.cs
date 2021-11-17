@@ -1,14 +1,7 @@
 using System;
-using System.Collections.Generic;
-using System.IO;
-using System.Linq;
-using System.Threading.Tasks;
-
-using IronSphere.Extensions;
 
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
-using Microsoft.AspNetCore.HttpsPolicy;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
@@ -20,6 +13,7 @@ using wasp.WebApi.Services.Configuration;
 using wasp.WebApi.Services.DatabaseAccess;
 using wasp.WebApi.Services.DataDefinition;
 using wasp.WebApi.Services.Environment;
+using wasp.WebApi.Services.PythonEngine;
 
 namespace wasp.WebApi
 {
@@ -46,9 +40,9 @@ namespace wasp.WebApi
             Environment.SetEnvironmentVariable(@"PYTHONNET_PYDLL",pythonSettings.PythonDll);
             Runtime.PythonDLL = pythonSettings.PythonDll;
             
-            Environment.SetEnvironmentVariable("PATH", pythonSettings.Path, EnvironmentVariableTarget.Process);
-            Environment.SetEnvironmentVariable("PYTHONHOME", pythonSettings.Path, EnvironmentVariableTarget.Process);
-            Environment.SetEnvironmentVariable("PYTHONPATH", $"{pythonSettings.Path}\\Lib\\site-packages;{pythonSettings.Path}\\Lib", EnvironmentVariableTarget.Process);
+            Environment.SetEnvironmentVariable(@"PATH", pythonSettings.Path, EnvironmentVariableTarget.Process);
+            Environment.SetEnvironmentVariable(@"PYTHONHOME", pythonSettings.Path, EnvironmentVariableTarget.Process);
+            Environment.SetEnvironmentVariable(@"PYTHONPATH", $"{pythonSettings.Path}\\Lib\\site-packages;{pythonSettings.Path}\\Lib", EnvironmentVariableTarget.Process);
             
             PythonEngine.Initialize();
             threadState = PythonEngine.BeginAllowThreads();
@@ -56,8 +50,10 @@ namespace wasp.WebApi
             services.AddControllers();
 
             services.AddTransient<IDiContainer, DiContainer>();
+            services.AddTransient<IPythonEngine, PythonNetEngine>();
             services.AddTransient<IDatabaseService, DatabaseService>();
             services.AddTransient<IDataDefinitionService, SqlServerDataDefinitionService>();
+            
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.

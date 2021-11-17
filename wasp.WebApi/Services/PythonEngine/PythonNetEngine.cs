@@ -18,7 +18,7 @@ namespace wasp.WebApi.Services.PythonEngine
 
         public void Dispose()
         {
-            _scope.Value.Dispose();
+            // _scope.Value.Dispose();
             GC.SuppressFinalize(this);
         }
 
