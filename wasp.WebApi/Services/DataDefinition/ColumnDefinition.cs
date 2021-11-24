@@ -1,27 +1,29 @@
-﻿using Python.Runtime;
+﻿using Wasp.Core.PythonTools;
 
 namespace wasp.WebApi.Services.DataDefinition
 {
     public class ColumnDefinition
     {
-        public ColumnDefinition(PyDict dataItem)
-        {
-            Name = dataItem["SqlId"].ToString();
-            DataType = dataItem["DbType"].ToString();
-            Length = dataItem.HasKey("DbLength") ? dataItem["DbLength"].As<int>() : null;
-            Precision = dataItem.HasKey("DbPrecision") ? dataItem["DbPrecision"].As<int>() : null;
-            Scale = dataItem.HasKey("DbScale") ? dataItem["DbScale"].As<int>() : null;
-
-        }
-
+        public string SqlId { get; set; }
         public string Name { get; set; }
+        
+        [PyProperty("DataTable")]
+        public string DataTable { get; set; }
+        
+        [PyProperty("DbType")]
         public string DataType { get; set; }
+        
+        [PyProperty("DbLength")]
         public int? Length { get; set; }
+        
+        [PyProperty("DbPrecision")]
         public int? Precision { get; set; }
+        
+        [PyProperty("DbScale")]
         public int? Scale { get; set; }
+        
         public bool IsNullable { get; set; }
+        
         public string DefaultValueSql { get; set; }
-
-
     }
 }

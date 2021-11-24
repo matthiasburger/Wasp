@@ -15,7 +15,7 @@ class DtpMigrationPackage:
         self.data_service = builtins.di_resolver.Resolve('wasp.WebApi.Services.DataDefinition.IDataDefinitionService')
 
     def create_datatable(self, datatable, primary_keys):
-        return self.data_service.CreateDataTable(datatable, primary_keys);
+        return self.data_service.CreateDataTable(datatable, primary_keys)
 
     def create_dataitem(self, dataitem):
-        self.data_service.CreateDataItem(dataitem);
+        return self.data_service.CreateDataItem(dataitem)

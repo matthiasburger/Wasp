@@ -4,4 +4,8 @@
         <TargetFramework>net5.0</TargetFramework>
     </PropertyGroup>
 
+    <ItemGroup>
+      <ProjectReference Include="..\pythonnet-master\src\runtime\Python.Runtime.csproj" />
+    </ItemGroup>
+
 </Project>

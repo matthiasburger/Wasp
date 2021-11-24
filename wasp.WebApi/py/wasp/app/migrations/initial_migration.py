@@ -25,7 +25,7 @@ class CreateBaseDatatables(DtpMigrationPackage):
         }
         sqlid_column = {
             'DataTable': 'DataTable',
-            'Name': 'SqlId',
+            'Name': 'Sql Id',
             'SqlId': 'SqlId',
             'PythonId': 'sql_id',
             'DbType': 'varchar',
@@ -46,19 +46,10 @@ class CreateBaseDatatables(DtpMigrationPackage):
             'IsNullable': False
         }
 
-        (data_table_dtp, primary_key_dtps, relation_dtp) = self.create_datatable(datatable, (id_column,))
-        name_column_dtp = self.create_dataitem(name_column)
-        sql_column_dtp = self.create_dataitem(sqlid_column)
-
-        dtp_records_to_create = []
-        dtp_records_to_create.append(data_table_dtp)
-        dtp_records_to_create.extend([*primary_key_dtps])
-        dtp_records_to_create.extend([*relation_dtp])
-        dtp_records_to_create.append(name_column_dtp)
-        dtp_records_to_create.append(sql_column_dtp)
-
-
-
+        self.create_datatable(datatable, (id_column,))
+        self.create_dataitem(sqlid_column)
+        self.create_dataitem(name_column)
+        
         dataitemtable  = {
             'SqlId': 'DataItem',
             'Name': 'DataItem'
@@ -204,24 +195,8 @@ class CreateBaseDatatables(DtpMigrationPackage):
             'IsNullable': False
         }
 
-        (dataitem_table_dtp, dataitem_primary_key_dtps, dataitem_relation_dtp) = self.create_datatable(dataitemtable, (dataitem_id_column,))
-        dtp_records_to_create.append(dataitem_table_dtp)
-        dtp_records_to_create.extend([*dataitem_primary_key_dtps])
-        dtp_records_to_create.extend([*dataitem_relation_dtp])
-
-        dataitem_datatable_dtp = self.create_dataitem(dataitem_datatable_column)
-        dtp_records_to_create.append(dataitem_datatable_dtp)
-        dtp_records_to_create.append(self.create_dataitem(dataitem_name_column))
-        dtp_records_to_create.append(self.create_dataitem(dataitem_sqlid_column))
-        dtp_records_to_create.append(self.create_dataitem(dataitem_pythonid_column))
-        dtp_records_to_create.append(self.create_dataitem(dataitem_dbtype_column))
-        dtp_records_to_create.append(self.create_dataitem(dataitem_dblength_column))
-        dtp_records_to_create.append(self.create_dataitem(dataitem_precision_column))
-        dtp_records_to_create.append(self.create_dataitem(dataitem_scale_column))
-        dtp_records_to_create.append(self.create_dataitem(dataitem_isvirtual_column))
-        dtp_records_to_create.append(self.create_dataitem(dataitem_applicationtype_column))
-        dtp_records_to_create.append(self.create_dataitem(dataitem_isnullable_column))
-        dtp_records_to_create.append(self.create_dataitem(dataitem_sqldefaultvalue_column))
+        self.create_datatable(dataitemtable, (dataitem_id_column,))
+       
 
 
         ## todo: relation_dataitem_datatable = self.create_relation(dataitem_datatable_dtp, primary_key_dtps[0]);
@@ -277,11 +252,5 @@ class CreateBaseDatatables(DtpMigrationPackage):
             'IsNullable': False
         }
         
-        (relationship_table_dtp, relationship_primary_key_dtps, relationship_relation_dtp) = self.create_datatable(relationshiptable, (relationship_id_column,))
-        dtp_records_to_create.append(relationship_table_dtp)
-        dtp_records_to_create.extend([*relationship_primary_key_dtps])
-        dtp_records_to_create.extend([*relationship_relation_dtp])
-
-        dtp_records_to_create.append(self.create_dataitem(relationship_dataitem_column))
-        dtp_records_to_create.append(self.create_dataitem(relationship_foreignkey_column))
-        dtp_records_to_create.append(self.create_dataitem(relationship_name_column))
+        self.create_datatable(relationshiptable, (relationship_id_column,))
+        

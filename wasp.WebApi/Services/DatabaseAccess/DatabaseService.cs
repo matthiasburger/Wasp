@@ -24,5 +24,11 @@ namespace wasp.WebApi.Services.DatabaseAccess
             
             return command.ExecuteNonQuery();
         }
+
+        public Microsoft.Data.SqlClient.SqlConnection GetNewConnection()
+        {
+            string connectionString = _configuration.GetConnectionString("WaspSqlServerConnectionString");
+            return new Microsoft.Data.SqlClient.SqlConnection(connectionString);
+        }
     }
 }
