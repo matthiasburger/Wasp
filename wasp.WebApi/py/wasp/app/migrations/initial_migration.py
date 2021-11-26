@@ -2,14 +2,12 @@
 
 class CreateBaseDatatables(DtpMigrationPackage):
 
-    def up(self):
-
-        print('applying migration!!!!')
+    def create_table_datatable(self):
 
         datatable  = {
             'SqlId': 'DataTable',
             'Name': 'DataTable'
-            }
+        }
 
         id_column = {
             'DataTable': 'DataTable',
@@ -46,15 +44,15 @@ class CreateBaseDatatables(DtpMigrationPackage):
             'IsNullable': False
         }
 
-        self.create_datatable(datatable, (id_column,))
-        self.create_dataitem(sqlid_column)
-        self.create_dataitem(name_column)
+        self.create_datatable(datatable, (id_column,), [sqlid_column, name_column])
         
+    def create_table_data_item(self):
+    
         dataitemtable  = {
             'SqlId': 'DataItem',
             'Name': 'DataItem'
-            }
-
+        }
+        
         dataitem_id_column = {
             'DataTable': 'DataItem',
             'Name': 'Id',
@@ -195,12 +193,15 @@ class CreateBaseDatatables(DtpMigrationPackage):
             'IsNullable': False
         }
 
-        self.create_datatable(dataitemtable, (dataitem_id_column,))
-       
+        self.create_datatable(dataitemtable, (dataitem_id_column,), [
+            dataitem_datatable_column, dataitem_name_column, dataitem_sqlid_column, 
+            dataitem_pythonid_column, dataitem_dbtype_column, dataitem_dblength_column,
+            dataitem_precision_column, dataitem_scale_column, dataitem_isvirtual_column,
+            dataitem_applicationtype_column, dataitem_isnullable_column, dataitem_sqldefaultvalue_column
+        ])
 
 
-        ## todo: relation_dataitem_datatable = self.create_relation(dataitem_datatable_dtp, primary_key_dtps[0]);
-
+    def create_table_relationship(self):
         
         relationshiptable  = {
             'SqlId': 'Relationship',
@@ -252,5 +253,17 @@ class CreateBaseDatatables(DtpMigrationPackage):
             'IsNullable': False
         }
         
-        self.create_datatable(relationshiptable, (relationship_id_column,))
+        self.create_datatable(relationshiptable, (relationship_id_column,), [relationship_dataitem_column, relationship_foreignkey_column, relationship_name_column])
+    
+    def create_datatable_dtp_records(self):
+        self.create_dtp_record('DataTable', tuple(), {'SqlId': 'DataTable', 'Name': 'Data-Table'})
+        self.create_dtp_record('DataTable', tuple(), {'SqlId': 'DataItem', 'Name': 'Data-Item'})
+        self.create_dtp_record('DataTable', tuple(), {'SqlId': 'Relationship', 'Name': 'Relationship'})
+    
+    def up(self):
         
+        self.create_table_datatable()
+        self.create_table_data_item()
+        self.create_table_relationship()
+        
+        self.create_datatable_dtp_records()

@@ -1,4 +1,3 @@
-using System;
 using System.Diagnostics.CodeAnalysis;
 
 using Microsoft.AspNetCore;
@@ -39,7 +38,7 @@ namespace wasp.WebApi
                 .UseConfiguration(ConfigurationService.GetPlatformAgnosticConfig(args))
                 .UseUrls(EnvironmentDiscovery.IsDocker ? "http://*:80" : "http://localhost:8000")
                 .UseStartup<Startup>()
-                .UseSerilog();;
+                .UseSerilog();
         }
     }
 }

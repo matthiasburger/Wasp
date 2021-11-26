@@ -15,9 +15,7 @@ using wasp.WebApi.Services;
 using wasp.WebApi.Services.Configuration;
 using wasp.WebApi.Services.DatabaseAccess;
 using wasp.WebApi.Services.DataDefinition;
-using wasp.WebApi.Services.Environment;
 using wasp.WebApi.Services.PythonEngine;
-using wasp.WebApi.Services.PythonLogger;
 
 namespace wasp.WebApi
 {
@@ -26,11 +24,9 @@ namespace wasp.WebApi
         public Startup(IConfiguration configuration)
         {
             _configuration = configuration;
-            _environmentDiscovery = new EnvironmentDiscovery();
         }
 
         private readonly IConfiguration _configuration;
-        private readonly IEnvironmentDiscovery _environmentDiscovery;
 
         private IntPtr threadState;
 
@@ -44,8 +40,6 @@ namespace wasp.WebApi
             services.AddControllers();
 
             services.AddTransient<IDiContainer, DiContainer>();
-            services.AddTransient<IPythonLogger, PythonLogger>();
-            services.AddTransient<IPythonEngine, PythonNetEngine>();
             services.AddTransient<IDatabaseService, DatabaseService>();
             services.AddTransient<IDataDefinitionService, SqlServerDataDefinitionService>();
             

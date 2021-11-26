@@ -1,6 +1,6 @@
-using System;
 using System.Collections.Generic;
 using System.Diagnostics;
+using System.Diagnostics.CodeAnalysis;
 
 using Microsoft.Extensions.Logging;
 
@@ -46,6 +46,7 @@ namespace wasp.WebApi.Services.PythonLogger
             Trace.WriteLine(str);
         }
 
+        [SuppressMessage("ReSharper", "IdentifierTypo")]
         public void writelines(string[] str)
         {
             foreach(string message in str)

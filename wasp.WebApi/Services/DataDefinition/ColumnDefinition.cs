@@ -1,4 +1,4 @@
-﻿using Wasp.Core.PythonTools;
+﻿using wasp.Core.PythonTools.PyMap;
 
 namespace wasp.WebApi.Services.DataDefinition
 {
@@ -7,19 +7,19 @@ namespace wasp.WebApi.Services.DataDefinition
         public string SqlId { get; set; }
         public string Name { get; set; }
         
-        [PyProperty("DataTable")]
+        [PyMapProperty("DataTable")]
         public string DataTable { get; set; }
         
-        [PyProperty("DbType")]
+        [PyMapProperty("DbType")]
         public string DataType { get; set; }
         
-        [PyProperty("DbLength")]
+        [PyMapProperty("DbLength")]
         public int? Length { get; set; }
         
-        [PyProperty("DbPrecision")]
+        [PyMapProperty("DbPrecision")]
         public int? Precision { get; set; }
         
-        [PyProperty("DbScale")]
+        [PyMapProperty("DbScale")]
         public int? Scale { get; set; }
         
         public bool IsNullable { get; set; }

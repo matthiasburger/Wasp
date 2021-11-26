@@ -1,5 +1,8 @@
+using System.Diagnostics.CodeAnalysis;
+
 namespace wasp.WebApi.Data.Models
 {
+    [SuppressMessage("ReSharper", "ClassNeverInstantiated.Global", Justification = "Needs implementation")]
     public class DataItem
     {
 

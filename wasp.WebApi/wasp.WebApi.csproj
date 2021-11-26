@@ -47,7 +47,7 @@
 
   <ItemGroup>
     <ProjectReference Include="..\pythonnet-master\src\runtime\Python.Runtime.csproj" />
-    <ProjectReference Include="..\Wasp.Core\Wasp.Core.csproj" />
+    <ProjectReference Include="..\wasp.Core\wasp.Core.csproj" />
   </ItemGroup>
 
   <ItemGroup>

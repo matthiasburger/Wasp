@@ -1,7 +1,9 @@
 ﻿using System;
+using System.Diagnostics.CodeAnalysis;
 
-namespace Wasp.Core
+namespace wasp.Core
 {
+    [SuppressMessage("ReSharper", "UnusedType.Global", Justification = "TODO: move this to IronSphere.Extensions")]
     public static class ReflectionExtensions
     {
         public static bool IsNullableType(this Type @this)

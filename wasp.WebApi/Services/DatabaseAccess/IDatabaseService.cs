@@ -1,4 +1,3 @@
-
 using Microsoft.Data.SqlClient;
 
 namespace wasp.WebApi.Services.DatabaseAccess
@@ -8,5 +7,7 @@ namespace wasp.WebApi.Services.DatabaseAccess
         int ExecuteQuery(string queryString);
 
         SqlConnection GetNewConnection();
+
+        System.Data.SqlClient.SqlCommand CreateSqlCmd(string sqlQuery);
     }
 }

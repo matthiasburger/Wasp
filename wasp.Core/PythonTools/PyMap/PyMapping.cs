@@ -5,7 +5,7 @@ using System.Reflection;
 
 using Python.Runtime;
 
-namespace Wasp.Core.PythonTools
+namespace wasp.Core.PythonTools.PyMap
 {
     public static class PyMapping
     {
@@ -20,8 +20,11 @@ namespace Wasp.Core.PythonTools
             T targetObject = new();
 
             IEnumerable<PropertyValueMapping> properties = from property in typeof(T).GetProperties(BindingFlags.Instance | BindingFlags.Public)
-                let attribute = property.GetCustomAttribute<PyPropertyAttribute>()?.Name
-                let value = (attribute != null && pyDict.HasKey(attribute)) ? pyDict[attribute] : pyDict.HasKey(property.Name) ? pyDict[property.Name] : PyObject.None
+                let noMapAttribute = property.GetCustomAttribute<PyMapIgnoreAttribute>()
+                where noMapAttribute is null
+                let attribute = property.GetCustomAttribute<PyMapPropertyAttribute>()?.Name
+                let hasKey = attribute != null && pyDict.HasKey(attribute)
+                let value = hasKey ? pyDict[attribute] : pyDict.HasKey(property.Name) ? pyDict[property.Name] : PyObject.None
                 where value != null && !value.IsNone() && property.SetMethod != null
                 select new PropertyValueMapping { Property = property, Value = value };
 

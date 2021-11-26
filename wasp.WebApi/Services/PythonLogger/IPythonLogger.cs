@@ -1,8 +1,8 @@
-﻿using System.Collections.Generic;
-using System.Diagnostics;
+﻿using System.Diagnostics.CodeAnalysis;
 
 namespace wasp.WebApi.Services.PythonLogger
 {
+    [SuppressMessage("ReSharper", "InconsistentNaming")]
     public interface IPythonLogger
     {
         // flushes the buffer
@@ -12,6 +12,7 @@ namespace wasp.WebApi.Services.PythonLogger
         void write(string str);
 
         // writes multiple lines of strings to the logger's buffer
+        [SuppressMessage("ReSharper", "IdentifierTypo")]
         void writelines(string[] str);
 
         // closes the buffer

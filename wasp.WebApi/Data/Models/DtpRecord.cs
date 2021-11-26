@@ -1,16 +1,14 @@
-﻿using System;
-using System.Collections.Generic;
+﻿using System.Diagnostics.CodeAnalysis;
 using System.Linq;
-using System.Threading.Tasks;
-
-using Python.Runtime;
 
 namespace wasp.WebApi.Data.Models
 {
+    [SuppressMessage("ReSharper", "UnusedType.Global", Justification = "needs implementation")]
     public class DtpRecord
     {
         public string DataTable { get; set; }
 
+        [SuppressMessage("ReSharper", "MemberCanBePrivate.Global", Justification = "Needs implementation")] 
         public DataItem[] DataItems { get; set; }
 
         public DataItem this[string pythonId]
