@@ -1,7 +1,7 @@
 ﻿using System.Diagnostics.CodeAnalysis;
 using System.Linq;
 
-namespace wasp.WebApi.Data.Models
+namespace wasp.WebApi.Data.Dto
 {
     [SuppressMessage("ReSharper", "UnusedType.Global", Justification = "needs implementation")]
     public class DtpRecord
