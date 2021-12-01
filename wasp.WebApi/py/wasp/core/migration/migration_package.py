@@ -1,4 +1,5 @@
-﻿import builtins
+﻿from wasp.WebApi.Services.StaticServiceProvider import ServiceLocator
+from wasp.WebApi.Services.DataDefinition import IDataDefinitionService
 
 class BaseMigrationPackage:
     def __init__(self):
@@ -12,7 +13,7 @@ class BaseMigrationPackage:
 
 class DtpMigrationPackage(BaseMigrationPackage):
     def __init__(self):
-        self.data_service = builtins.di_resolver.Resolve('wasp.WebApi.Services.DataDefinition.IDataDefinitionService')
+        self.data_service = ServiceLocator.ServiceProvider.GetService[IDataDefinitionService]()
 
     def create_datatable(self, datatable, primary_keys, columns = []):
         return self.data_service.CreateDataTable(datatable, primary_keys, columns)

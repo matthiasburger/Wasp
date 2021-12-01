@@ -2,8 +2,10 @@ using System;
 
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
+using Microsoft.AspNetCore.Http;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
+using Microsoft.Extensions.DependencyInjection.Extensions;
 using Microsoft.Extensions.Hosting;
 using Microsoft.Extensions.Logging;
 
@@ -16,6 +18,7 @@ using wasp.WebApi.Services.Configuration;
 using wasp.WebApi.Services.DatabaseAccess;
 using wasp.WebApi.Services.DataDefinition;
 using wasp.WebApi.Services.PythonEngine;
+using wasp.WebApi.Services.StaticServiceProvider;
 
 namespace wasp.WebApi
 {
@@ -39,14 +42,17 @@ namespace wasp.WebApi
 
             services.AddControllers();
 
-            services.AddTransient<IDiContainer, DiContainer>();
             services.AddTransient<IDatabaseService, DatabaseService>();
             services.AddTransient<IDataDefinitionService, SqlServerDataDefinitionService>();
+
+            services.TryAddSingleton<IHttpContextAccessor, HttpContextAccessor>();
+            services.AddSingleton<IServiceProviderProxy, HttpContextServiceProviderProxy>();
+
             
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
-        public void Configure(IApplicationBuilder app, IWebHostEnvironment env, ILoggerFactory loggerFactory, IHostApplicationLifetime applicationLifetime)
+        public void Configure(IApplicationBuilder app, IWebHostEnvironment env, ILoggerFactory loggerFactory, IHostApplicationLifetime applicationLifetime, IServiceProvider sp)
         {
             if (env.IsDevelopment())
             {
@@ -69,7 +75,8 @@ namespace wasp.WebApi
             {
                 endpoints.MapControllers();
             });
-            
+            ServiceLocator.Initialize(sp.GetService<IServiceProviderProxy>());
+
             applicationLifetime.ApplicationStopping.Register(OnShutdown);
         }
 
