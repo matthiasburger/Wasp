@@ -3,6 +3,7 @@ using System;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Http;
+using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.DependencyInjection.Extensions;
@@ -13,6 +14,7 @@ using Python.Runtime;
 
 using Serilog;
 
+using wasp.WebApi.Data;
 using wasp.WebApi.Services;
 using wasp.WebApi.Services.Configuration;
 using wasp.WebApi.Services.DatabaseAccess;
@@ -36,6 +38,9 @@ namespace wasp.WebApi
         // This method gets called by the runtime. Use this method to add services to the container.
         public void ConfigureServices(IServiceCollection services)
         {
+            services.AddDbContext<ApplicationDbContext>(options =>
+                options.UseSqlServer(_configuration.GetConnectionString("WaspSqlServerConnectionString")));
+            
             services.Configure<PythonSettings>(_configuration.GetSection("PythonSettings"));
 
             threadState = services.AddPython(_configuration);

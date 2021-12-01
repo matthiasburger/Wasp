@@ -256,9 +256,9 @@ class CreateBaseDatatables(DtpMigrationPackage):
         self.create_datatable(relationshiptable, (relationship_id_column,), [relationship_dataitem_column, relationship_foreignkey_column, relationship_name_column])
     
     def create_datatable_dtp_records(self):
-        self.create_dtp_record('DataTable', tuple(), {'SqlId': 'DataTable', 'Name': 'Data-Table'})
-        self.create_dtp_record('DataTable', tuple(), {'SqlId': 'DataItem', 'Name': 'Data-Item'})
-        self.create_dtp_record('DataTable', tuple(), {'SqlId': 'Relationship', 'Name': 'Relationship'})
+        self.create_dtp_record('DataTable', {'SqlId': 'DataTable', 'Name': 'Data-Table'})
+        self.create_dtp_record('DataTable', {'SqlId': 'DataItem', 'Name': 'Data-Item'})
+        self.create_dtp_record('DataTable', {'SqlId': 'Relationship', 'Name': 'Relationship'})
     
     def up(self):
         
