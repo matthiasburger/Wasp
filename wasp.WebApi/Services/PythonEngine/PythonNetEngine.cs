@@ -13,10 +13,10 @@ namespace wasp.WebApi.Services.PythonEngine
     public class PythonNetEngine : IPythonEngine, IDisposable
     {
         private readonly Lazy<PyModule> _scope;
-        private readonly IDiContainer _diContainer;
+        // private readonly IDiContainer _diContainer;
         private readonly IPythonLogger _pythonLogger;
 
-        public PythonNetEngine(IDiContainer diContainer, IPythonLogger pythonLogger)
+        public PythonNetEngine(IPythonLogger pythonLogger)
         {
             _scope = new Lazy<PyModule>(Py.CreateScope);
 
@@ -24,8 +24,6 @@ namespace wasp.WebApi.Services.PythonEngine
             _setupLogger();
 
             SetSearchPath(new List<string> { "./py/" });
-            _diContainer = diContainer;
-            _initialize();
         }
 
         public void Dispose()
@@ -63,16 +61,7 @@ namespace wasp.WebApi.Services.PythonEngine
 
             return result;
         }
-
-        public void Initialize(IDiContainer appContainer)
-        {
-            SetVariable("DiContainer", appContainer);
-            string initScript = File.ReadAllText("./py/wasp/core/dependency_injection.py");
-            ExecuteCommand(initScript);
-        }
-
-        private void _initialize() => Initialize(_diContainer);
-
+        
         public IList<string> SearchPaths()
         {
             List<string> pythonPaths = new();

@@ -147,11 +147,7 @@ namespace wasp.WebApi.Services.DataDefinition
 
             PyIterable keys = properties.Keys();
 
-
-
-
             string query = $@"insert into [{datatable}] ({string.Join(", ", keys.Select(x => $"[{x}]").ToArray())}) values ({keys.Select(x => $"@{x}").ToArray()})";
-
 
             using SqlCommand command = _databaseService.CreateSqlCmd(query);
             command.Parameters.AddRange(_generateParameters(properties).ToArray());

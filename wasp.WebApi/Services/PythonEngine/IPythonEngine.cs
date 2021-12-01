@@ -11,7 +11,5 @@ namespace wasp.WebApi.Services.PythonEngine
         IList<string> SearchPaths();
 
         void SetSearchPath(IEnumerable<string> paths);
-
-        void Initialize(IDiContainer appContainer);
     }
 }
