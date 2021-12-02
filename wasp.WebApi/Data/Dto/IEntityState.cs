@@ -1,4 +1,6 @@
-﻿namespace wasp.WebApi.Data.Dto
+﻿using System.Diagnostics.CodeAnalysis;
+
+namespace wasp.WebApi.Data.Dto
 {
     public enum DtpRecordState
     {
@@ -10,6 +12,7 @@
         Removed = 4
     }
     
+    [SuppressMessage("ReSharper", "UnusedType.Global", Justification = "Will be used later")]
     public interface IEntityState<out T>
     {
         T Entity { get; }

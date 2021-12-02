@@ -15,7 +15,7 @@ using Python.Runtime;
 using Serilog;
 
 using wasp.WebApi.Data;
-using wasp.WebApi.Services;
+using wasp.WebApi.Exceptions;
 using wasp.WebApi.Services.Configuration;
 using wasp.WebApi.Services.DatabaseAccess;
 using wasp.WebApi.Services.DataDefinition;
@@ -80,7 +80,11 @@ namespace wasp.WebApi
             {
                 endpoints.MapControllers();
             });
-            ServiceLocator.Initialize(sp.GetService<IServiceProviderProxy>());
+            IServiceProviderProxy? serviceProviderProxy = sp.GetService<IServiceProviderProxy>();
+            if (serviceProviderProxy is null)
+                throw new ServiceNotFoundException<IServiceProviderProxy>();
+            
+            ServiceLocator.Initialize(serviceProviderProxy);
 
             applicationLifetime.ApplicationStopping.Register(OnShutdown);
         }

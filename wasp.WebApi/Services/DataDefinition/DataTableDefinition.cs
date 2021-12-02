@@ -13,8 +13,9 @@ namespace wasp.WebApi.Services.DataDefinition
     {
         public DataTableDefinition()
         {
+            TableName = "<undefined>";
         }
-
+        
         private DataTableDefinition(PyDict dataTableData)
         {
             if (!dataTableData.HasKey("SqlId"))

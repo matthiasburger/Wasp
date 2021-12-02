@@ -1,11 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Collections.Specialized;
-using System.Data;
 using System.Linq;
-using System.Text;
-
-using IronSphere.Extensions;
 
 using Microsoft.Data.SqlClient;
 using Microsoft.SqlServer.Management.Common;
@@ -14,6 +9,7 @@ using Microsoft.SqlServer.Management.Smo;
 using Python.Runtime;
 
 using wasp.Core.PythonTools.PyMap;
+using wasp.WebApi.Exceptions;
 using wasp.WebApi.Services.DatabaseAccess;
 
 using Index = Microsoft.SqlServer.Management.Smo.Index;
@@ -41,7 +37,7 @@ namespace wasp.WebApi.Services.DataDefinition
         /// <param name="primaryKeys">the primary keys for this data-table</param>
         /// <param name="columns">the columns for this data-table</param>
         /// <returns>a tuple of dtp-records (data-table-DTP, (primary-key-DTP,))</returns>
-        public void CreateDataTable(PyDict datatable, PyTuple primaryKeys, PyList columns = null)
+        public void CreateDataTable(PyDict datatable, PyTuple primaryKeys, PyList? columns = null)
         {
             DataTableDefinition dataTableDefinition;
             using (Py.GIL())
@@ -141,7 +137,7 @@ namespace wasp.WebApi.Services.DataDefinition
             col.Alter();
         }
 
-        public void CreateDtpRecord(string datatable, PyTuple primaryKeys, PyDict properties)
+        public void CreateDtpRecord(string datatable, PyDict properties)
         {
             using Py.GILState _ = Py.GIL();
 
@@ -155,7 +151,7 @@ namespace wasp.WebApi.Services.DataDefinition
             command.ExecuteNonQuery();
         }
 
-        private IEnumerable<SqlParameter> _generateParameters(PyDict properties)
+        private static IEnumerable<SqlParameter> _generateParameters(PyDict properties)
         {
             return from pyKey in properties.Keys() 
                     let key = pyKey.ToString() 
@@ -169,6 +165,9 @@ namespace wasp.WebApi.Services.DataDefinition
 
         private static DataType _getDataType(ColumnDefinition column)
         {
+            if (column.DataType is null)
+                throw new MissingParameterException<ColumnDefinition>(nameof(column), "DataType");
+            
             return column.DataType.ToLower() switch
             {
                 "varchar" when column.Length.HasValue => DataType.VarChar(column.Length.Value),
@@ -198,7 +197,7 @@ namespace wasp.WebApi.Services.DataDefinition
             };
         }
 
-        private static DataTableDefinition _buildDataTableDefinition(PyDict datatable, PyTuple primaryKeys, PyList columns)
+        private static DataTableDefinition _buildDataTableDefinition(PyDict datatable, PyTuple primaryKeys, PyList? columns)
         {
             DataTableDefinition definition = datatable.MapTo<DataTableDefinition>();
             definition.AddPrimaryKeys(primaryKeys);

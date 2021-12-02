@@ -30,7 +30,7 @@ namespace wasp.WebApi.Services.PythonLogger
         public string ReadStream()
         {
             string str = string.Join("\n", buffer);
-            _logger.LogDebug(str);
+            _logger.LogDebug("{str}",str);
             return str;
         }
 
@@ -42,7 +42,7 @@ namespace wasp.WebApi.Services.PythonLogger
             }
 
             buffer.Add(str);
-            _logger.LogDebug(str);
+            _logger.LogDebug("{str}", str);
             Trace.WriteLine(str);
         }
 
@@ -50,7 +50,7 @@ namespace wasp.WebApi.Services.PythonLogger
         public void writelines(string[] str)
         {
             foreach(string message in str)
-                _logger.LogDebug(message);
+                _logger.LogDebug("{message}", message);
 
             buffer.AddRange(str);
         }

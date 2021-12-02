@@ -6,9 +6,9 @@ namespace wasp.WebApi.Data.Dto
     public class DataItem
     {
 
-        public string DataItemId { get; set; }
-        public string PythonId { get; set; }
+        public string? DataItemId { get; set; }
+        public string? PythonId { get; set; }
 
-        public object Value { get; set; }
+        public object? Value { get; set; }
     }
 }
