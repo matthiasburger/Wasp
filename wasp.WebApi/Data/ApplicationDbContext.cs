@@ -29,20 +29,17 @@ namespace wasp.WebApi.Data
             modelBuilder.Entity<DataItem>().HasKey(x => new { x.Id, x.DataTableId });
 
             modelBuilder.Entity<Relation>()
-                .HasKey(x => new { x.IndexId, x.KeyDataItemId, x.KeyDataTableId, x.ReferenceDataItemId, x.ReferenceDataTableId })
+                .HasKey(x => new { x.IndexId, x.KeyDataItemId, x.KeyDataTableId })
                 .IsClustered(false);
             
             modelBuilder.Entity<Relation>()
                 .HasOne(x => x.KeyDataItem)
-                .WithMany(x=>x.KeyRelations)
-                .OnDelete(DeleteBehavior.NoAction);
+                .WithMany(x=>x.KeyRelations);
             
             modelBuilder.Entity<Relation>()
-                .HasOne(x => x.ReferenceDataItem)
+                .HasOne(x=>x.ReferenceDataItem)
                 .WithMany(x=>x.ReferenceRelations)
-                .HasForeignKey(x=>new{x.ReferenceDataItemId, x.ReferenceDataTableId})
-                .IsRequired(false)
-                .OnDelete(DeleteBehavior.NoAction);
+                .HasForeignKey(x=>new{x.ReferenceDataItemId, x.ReferenceDataTableId});
             
         }
     }

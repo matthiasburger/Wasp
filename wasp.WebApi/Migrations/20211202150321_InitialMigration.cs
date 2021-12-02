@@ -1,8 +1,10 @@
 ﻿using Microsoft.EntityFrameworkCore.Migrations;
 
+#nullable disable
+
 namespace wasp.WebApi.Migrations
 {
-    public partial class InitialDatabaseMigration : Migration
+    public partial class InitialMigration : Migration
     {
         protected override void Up(MigrationBuilder migrationBuilder)
         {
@@ -11,8 +13,8 @@ namespace wasp.WebApi.Migrations
                 columns: table => new
                 {
                     Id = table.Column<string>(type: "nvarchar(100)", nullable: false),
-                    Name = table.Column<string>(type: "nvarchar(200)", nullable: true),
-                    SqlId = table.Column<string>(type: "nvarchar(200)", nullable: true)
+                    Name = table.Column<string>(type: "nvarchar(200)", nullable: false),
+                    SqlId = table.Column<string>(type: "nvarchar(200)", nullable: false)
                 },
                 constraints: table =>
                 {
@@ -37,7 +39,7 @@ namespace wasp.WebApi.Migrations
                 {
                     Id = table.Column<string>(type: "nvarchar(300)", nullable: false),
                     DataTableId = table.Column<string>(type: "nvarchar(100)", nullable: false),
-                    Name = table.Column<string>(type: "nvarchar(400)", nullable: true),
+                    Name = table.Column<string>(type: "nvarchar(400)", nullable: false),
                     PythonId = table.Column<string>(type: "nvarchar(100)", nullable: true)
                 },
                 constraints: table =>
@@ -58,18 +60,19 @@ namespace wasp.WebApi.Migrations
                     IndexId = table.Column<string>(type: "nvarchar(300)", nullable: false),
                     KeyDataItemId = table.Column<string>(type: "nvarchar(300)", nullable: false),
                     KeyDataTableId = table.Column<string>(type: "nvarchar(100)", nullable: false),
-                    ReferenceDataItemId = table.Column<string>(type: "nvarchar(300)", nullable: false),
-                    ReferenceDataTableId = table.Column<string>(type: "nvarchar(100)", nullable: false)
+                    ReferenceDataItemId = table.Column<string>(type: "nvarchar(300)", nullable: true),
+                    ReferenceDataTableId = table.Column<string>(type: "nvarchar(100)", nullable: true)
                 },
                 constraints: table =>
                 {
-                    table.PrimaryKey("PK_Relation", x => new { x.IndexId, x.KeyDataItemId, x.KeyDataTableId, x.ReferenceDataItemId, x.ReferenceDataTableId })
+                    table.PrimaryKey("PK_Relation", x => new { x.IndexId, x.KeyDataItemId, x.KeyDataTableId })
                         .Annotation("SqlServer:Clustered", false);
                     table.ForeignKey(
                         name: "FK_Relation_DataItem_KeyDataItemId_KeyDataTableId",
                         columns: x => new { x.KeyDataItemId, x.KeyDataTableId },
                         principalTable: "DataItem",
-                        principalColumns: new[] { "Id", "DataTableId" });
+                        principalColumns: new[] { "Id", "DataTableId" },
+                        onDelete: ReferentialAction.Cascade);
                     table.ForeignKey(
                         name: "FK_Relation_DataItem_ReferenceDataItemId_ReferenceDataTableId",
                         columns: x => new { x.ReferenceDataItemId, x.ReferenceDataTableId },
