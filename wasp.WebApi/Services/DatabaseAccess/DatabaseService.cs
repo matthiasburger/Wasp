@@ -8,6 +8,7 @@ using Microsoft.VisualBasic.CompilerServices;
 
 namespace wasp.WebApi.Services.DatabaseAccess
 {
+    [Obsolete("should not be used anymore")]
     [SuppressMessage("ReSharper", "ClassWithVirtualMembersNeverInherited.Global", Justification = "Dependency-Injected")]
     public class DatabaseService : IDatabaseService, IDisposable
     {
@@ -54,9 +55,6 @@ namespace wasp.WebApi.Services.DatabaseAccess
                 Connection.Open();
         }
 
-        /// <summary>
-        /// 
-        /// </summary>
         protected void CloseConnection()
         {
             if (Connection is null)

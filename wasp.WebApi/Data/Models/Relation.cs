@@ -22,11 +22,9 @@ namespace wasp.WebApi.Data.Models
         public string KeyDataTableId { get; set; } = null!;
         
         [Column("ReferenceDataItemId", Order = 3, TypeName = "nvarchar(300)")]
-        // [Key, DatabaseGenerated(DatabaseGeneratedOption.None)]
         public string? ReferenceDataItemId { get; set; }
         
         [Column("ReferenceDataTableId", Order = 4, TypeName = "nvarchar(100)")]
-        // [Key, DatabaseGenerated(DatabaseGeneratedOption.None)]
         public string? ReferenceDataTableId { get; set; }
         
         

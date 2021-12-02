@@ -5,6 +5,8 @@ using Microsoft.EntityFrameworkCore.Metadata;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using wasp.WebApi.Data;
 
+#nullable disable
+
 namespace wasp.WebApi.Migrations
 {
     [DbContext(typeof(ApplicationDbContext))]
@@ -14,27 +16,33 @@ namespace wasp.WebApi.Migrations
         {
 #pragma warning disable 612, 618
             modelBuilder
-                .HasAnnotation("Relational:MaxIdentifierLength", 128)
-                .HasAnnotation("ProductVersion", "5.0.12")
-                .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
+                .HasAnnotation("ProductVersion", "6.0.0")
+                .HasAnnotation("Relational:MaxIdentifierLength", 128);
+
+            SqlServerModelBuilderExtensions.UseIdentityColumns(modelBuilder, 1L, 1);
 
             modelBuilder.Entity("wasp.WebApi.Data.Models.DataItem", b =>
                 {
                     b.Property<string>("Id")
                         .HasColumnType("nvarchar(300)")
-                        .HasColumnName("Id");
+                        .HasColumnName("Id")
+                        .HasColumnOrder(0);
 
                     b.Property<string>("DataTableId")
                         .HasColumnType("nvarchar(100)")
-                        .HasColumnName("DataTableId");
+                        .HasColumnName("DataTableId")
+                        .HasColumnOrder(1);
 
                     b.Property<string>("Name")
+                        .IsRequired()
                         .HasColumnType("nvarchar(400)")
-                        .HasColumnName("Name");
+                        .HasColumnName("Name")
+                        .HasColumnOrder(2);
 
                     b.Property<string>("PythonId")
                         .HasColumnType("nvarchar(100)")
-                        .HasColumnName("PythonId");
+                        .HasColumnName("PythonId")
+                        .HasColumnOrder(3);
 
                     b.HasKey("Id", "DataTableId");
 
@@ -47,15 +55,20 @@ namespace wasp.WebApi.Migrations
                 {
                     b.Property<string>("Id")
                         .HasColumnType("nvarchar(100)")
-                        .HasColumnName("Id");
+                        .HasColumnName("Id")
+                        .HasColumnOrder(0);
 
                     b.Property<string>("Name")
+                        .IsRequired()
                         .HasColumnType("nvarchar(200)")
-                        .HasColumnName("Name");
+                        .HasColumnName("Name")
+                        .HasColumnOrder(1);
 
                     b.Property<string>("SqlId")
+                        .IsRequired()
                         .HasColumnType("nvarchar(200)")
-                        .HasColumnName("SqlId");
+                        .HasColumnName("SqlId")
+                        .HasColumnOrder(2);
 
                     b.HasKey("Id");
 
@@ -66,11 +79,13 @@ namespace wasp.WebApi.Migrations
                 {
                     b.Property<string>("Id")
                         .HasColumnType("nvarchar(300)")
-                        .HasColumnName("Id");
+                        .HasColumnName("Id")
+                        .HasColumnOrder(0);
 
                     b.Property<byte>("Type")
                         .HasColumnType("tinyint")
-                        .HasColumnName("Type");
+                        .HasColumnName("Type")
+                        .HasColumnOrder(1);
 
                     b.HasKey("Id");
 
@@ -81,26 +96,32 @@ namespace wasp.WebApi.Migrations
                 {
                     b.Property<string>("IndexId")
                         .HasColumnType("nvarchar(300)")
-                        .HasColumnName("IndexId");
+                        .HasColumnName("IndexId")
+                        .HasColumnOrder(0);
 
                     b.Property<string>("KeyDataItemId")
                         .HasColumnType("nvarchar(300)")
-                        .HasColumnName("KeyDataItemId");
+                        .HasColumnName("KeyDataItemId")
+                        .HasColumnOrder(1);
 
                     b.Property<string>("KeyDataTableId")
                         .HasColumnType("nvarchar(100)")
-                        .HasColumnName("KeyDataTableId");
+                        .HasColumnName("KeyDataTableId")
+                        .HasColumnOrder(2);
 
                     b.Property<string>("ReferenceDataItemId")
                         .HasColumnType("nvarchar(300)")
-                        .HasColumnName("ReferenceDataItemId");
+                        .HasColumnName("ReferenceDataItemId")
+                        .HasColumnOrder(3);
 
                     b.Property<string>("ReferenceDataTableId")
                         .HasColumnType("nvarchar(100)")
-                        .HasColumnName("ReferenceDataTableId");
+                        .HasColumnName("ReferenceDataTableId")
+                        .HasColumnOrder(4);
 
-                    b.HasKey("IndexId", "KeyDataItemId", "KeyDataTableId", "ReferenceDataItemId", "ReferenceDataTableId")
-                        .IsClustered(false);
+                    b.HasKey("IndexId", "KeyDataItemId", "KeyDataTableId");
+
+                    SqlServerKeyBuilderExtensions.IsClustered(b.HasKey("IndexId", "KeyDataItemId", "KeyDataTableId"), false);
 
                     b.HasIndex("KeyDataItemId", "KeyDataTableId");
 
@@ -131,14 +152,12 @@ namespace wasp.WebApi.Migrations
                     b.HasOne("wasp.WebApi.Data.Models.DataItem", "KeyDataItem")
                         .WithMany("KeyRelations")
                         .HasForeignKey("KeyDataItemId", "KeyDataTableId")
-                        .OnDelete(DeleteBehavior.NoAction)
+                        .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
                     b.HasOne("wasp.WebApi.Data.Models.DataItem", "ReferenceDataItem")
                         .WithMany("ReferenceRelations")
-                        .HasForeignKey("ReferenceDataItemId", "ReferenceDataTableId")
-                        .OnDelete(DeleteBehavior.NoAction)
-                        .IsRequired();
+                        .HasForeignKey("ReferenceDataItemId", "ReferenceDataTableId");
 
                     b.Navigation("Index");
 
