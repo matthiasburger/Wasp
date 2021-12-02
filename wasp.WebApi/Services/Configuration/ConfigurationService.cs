@@ -7,7 +7,7 @@ namespace wasp.WebApi.Services.Configuration
 {
     public class ConfigurationService : IConfigurationService
     {
-        public IConfiguration GetPlatformAgnosticConfig(string[] cliArgs = null)
+        public IConfiguration GetPlatformAgnosticConfig(string[]? cliArgs = null)
         {
             IConfigurationBuilder configurationBuilder = new ConfigurationBuilder();
             

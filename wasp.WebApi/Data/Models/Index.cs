@@ -1,5 +1,6 @@
 ﻿using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
+using System.Diagnostics.CodeAnalysis;
 
 namespace wasp.WebApi.Data.Models
 {
@@ -12,11 +13,12 @@ namespace wasp.WebApi.Data.Models
     }
     
     [Table("Index")]
+    [SuppressMessage("ReSharper", "ClassNeverInstantiated.Global", Justification = "Used by EF")]
     public class Index
     {
-        [Column("Id", Order = 0, TypeName = "nvarchar(300)")]
+        [Column("Id", Order = 0, TypeName = "nvarchar(300)"), Required]
         [Key, DatabaseGenerated(DatabaseGeneratedOption.None)]
-        public string Id { get; set; } 
+        public string Id { get; set; } = null!;
         
         [Column("Type", Order = 1, TypeName = "tinyint")]
         public IndexType Type { get; set; }

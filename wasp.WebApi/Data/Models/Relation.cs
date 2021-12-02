@@ -1,41 +1,43 @@
+using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
-
-using JetBrains.Annotations;
+using System.Diagnostics.CodeAnalysis;
 
 namespace wasp.WebApi.Data.Models
 {
     [Table("Relation")]
+    [SuppressMessage("ReSharper", "ClassNeverInstantiated.Global", Justification = "Used by EF")]
+    [SuppressMessage("ReSharper", "AutoPropertyCanBeMadeGetOnly.Global", Justification = "Set-Accessor is accessed by EF")]
     public class Relation
     {
-        [Column("IndexId", Order = 0, TypeName = "nvarchar(300)")]
+        [Column("IndexId", Order = 0, TypeName = "nvarchar(300)"), Required]
         // [Key, DatabaseGenerated(DatabaseGeneratedOption.None)]
-        public string IndexId { get; set; }
+        public string IndexId { get; set; } = null!;
         
-        [Column("KeyDataItemId", Order = 1, TypeName = "nvarchar(300)")]
+        [Column("KeyDataItemId", Order = 1, TypeName = "nvarchar(300)"), Required]
         // [Key, DatabaseGenerated(DatabaseGeneratedOption.None)]
-        public string KeyDataItemId { get; set; }
-        
-        [Column("KeyDataTableId", Order = 2, TypeName = "nvarchar(100)")]
+        public string KeyDataItemId { get; set; } = null!;
+
+        [Column("KeyDataTableId", Order = 2, TypeName = "nvarchar(100)"), Required]
         // [Key, DatabaseGenerated(DatabaseGeneratedOption.None)]
-        public string KeyDataTableId { get; set; }
+        public string KeyDataTableId { get; set; } = null!;
         
         [Column("ReferenceDataItemId", Order = 3, TypeName = "nvarchar(300)")]
         // [Key, DatabaseGenerated(DatabaseGeneratedOption.None)]
-        public string ReferenceDataItemId { get; set; }
+        public string? ReferenceDataItemId { get; set; }
         
         [Column("ReferenceDataTableId", Order = 4, TypeName = "nvarchar(100)")]
         // [Key, DatabaseGenerated(DatabaseGeneratedOption.None)]
-        public string ReferenceDataTableId { get; set; }
+        public string? ReferenceDataTableId { get; set; }
         
         
         [ForeignKey("IndexId")]
-        public Index Index { get; set; }
+        public Index Index { get; set; } = null!;
         
         [ForeignKey("KeyDataItemId, KeyDataTableId")]
-        public DataItem KeyDataItem { get; set; }
+        public DataItem KeyDataItem { get; set; } = null!;
         
         [ForeignKey("ReferenceDataItemId, ReferenceDataTableId")]
-        public DataItem ReferenceDataItem { get; set; }
+        public DataItem? ReferenceDataItem { get; set; }
     }
     
     

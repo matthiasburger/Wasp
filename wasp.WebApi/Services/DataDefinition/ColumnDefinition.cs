@@ -4,14 +4,14 @@ namespace wasp.WebApi.Services.DataDefinition
 {
     public class ColumnDefinition
     {
-        public string SqlId { get; set; }
-        public string Name { get; set; }
+        public string? SqlId { get; set; }
+        public string? Name { get; set; }
         
         [PyMapProperty("DataTable")]
-        public string DataTable { get; set; }
+        public string? DataTable { get; set; }
         
         [PyMapProperty("DbType")]
-        public string DataType { get; set; }
+        public string? DataType { get; set; }
         
         [PyMapProperty("DbLength")]
         public int? Length { get; set; }
@@ -24,6 +24,6 @@ namespace wasp.WebApi.Services.DataDefinition
         
         public bool IsNullable { get; set; }
         
-        public string DefaultValueSql { get; set; }
+        public string? DefaultValueSql { get; set; }
     }
 }

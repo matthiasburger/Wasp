@@ -22,7 +22,7 @@ namespace wasp.WebApi.Services.Environment
 
     public class EnvironmentDiscovery : IEnvironmentDiscovery
     {
-        private static string _getVariable(string variable, EnvironmentVariableTarget target)
+        private static string? _getVariable(string variable, EnvironmentVariableTarget target)
             => System.Environment.GetEnvironmentVariable(variable, target);
 
         /// <inheritdoc cref="IEnvironmentDiscovery"/>
@@ -30,7 +30,7 @@ namespace wasp.WebApi.Services.Environment
         {
             get
             {
-                string environmentVariableDevelopment =
+                string? environmentVariableDevelopment =
                     _getVariable("WaspDevelopment", EnvironmentVariableTarget.User)
                     ?? _getVariable("WaspDevelopment", EnvironmentVariableTarget.Process);
 
@@ -47,7 +47,7 @@ namespace wasp.WebApi.Services.Environment
         {
             get
             {
-                string docker =
+                string? docker =
                     _getVariable("WaspDocker", EnvironmentVariableTarget.User)
                     ?? _getVariable("WaspDocker", EnvironmentVariableTarget.Process);
 

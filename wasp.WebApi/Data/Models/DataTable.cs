@@ -1,19 +1,21 @@
 ﻿using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
+using System.Diagnostics.CodeAnalysis;
 
 namespace wasp.WebApi.Data.Models
 {
     [Table("DataTable")]
+    [SuppressMessage("ReSharper", "ClassNeverInstantiated.Global", Justification = "Used by EF")]
     public class DataTable
     {
-        [Column("Id", Order = 0, TypeName = "nvarchar(100)")]
+        [Column("Id", Order = 0, TypeName = "nvarchar(100)"), Required]
         [Key, DatabaseGenerated(DatabaseGeneratedOption.None)]
-        public string Id { get; set; }
+        public string Id { get; set; } = null!;
 
-        [Column("Name", Order = 1, TypeName = "nvarchar(200)")]
-        public string Name { get; set; }
+        [Column("Name", Order = 1, TypeName = "nvarchar(200)"), Required]
+        public string Name { get; set; } = null!;
 
-        [Column("SqlId", Order = 2, TypeName = "nvarchar(200)")]
-        public string SqlId { get; set; }
+        [Column("SqlId", Order = 2, TypeName = "nvarchar(200)"), Required]
+        public string SqlId { get; set; } = null!;
     }
 }

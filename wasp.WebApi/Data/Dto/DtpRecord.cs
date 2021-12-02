@@ -1,15 +1,17 @@
-﻿using System.Diagnostics.CodeAnalysis;
+﻿using System;
+using System.Diagnostics.CodeAnalysis;
 using System.Linq;
 
 namespace wasp.WebApi.Data.Dto
 {
-    [SuppressMessage("ReSharper", "UnusedType.Global", Justification = "needs implementation")]
+    [SuppressMessage("ReSharper", "UnusedType.Global", Justification = "Needs implementation")]
+    [SuppressMessage("ReSharper", "MemberCanBePrivate.Global", Justification = "Needs implementation")]
+    [SuppressMessage("ReSharper", "AutoPropertyCanBeMadeGetOnly.Global", Justification = "Needs implementation")]
     public class DtpRecord
     {
-        public string DataTable { get; set; }
+        public string? DataTable { get; set; }
 
-        [SuppressMessage("ReSharper", "MemberCanBePrivate.Global", Justification = "Needs implementation")] 
-        public DataItem[] DataItems { get; set; }
+        public DataItem[] DataItems { get; set; } = Array.Empty<DataItem>();
 
         public DataItem this[string pythonId]
         {

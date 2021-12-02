@@ -4,7 +4,7 @@
     {
         public static string SectionName => nameof(PythonSettings);
         
-        public string Path { get; set; }
-        public string PythonDll { get; set; }
+        public string? Path { get; set; }
+        public string? PythonDll { get; set; }
     }
 }

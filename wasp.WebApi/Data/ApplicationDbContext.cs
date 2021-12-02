@@ -1,30 +1,23 @@
 ﻿using Microsoft.EntityFrameworkCore;
-using Microsoft.EntityFrameworkCore.Design;
-using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.Logging;
 
 using wasp.WebApi.Data.Models;
-using wasp.WebApi.Services.Configuration;
-using wasp.WebApi.Services.Environment;
 
 namespace wasp.WebApi.Data
 {
     public class ApplicationDbContext : DbContext
     {
         private readonly ILoggerFactory _loggerFactory;
-        private readonly IEnvironmentDiscovery _environmentDiscovery;
-        
-        public ApplicationDbContext(DbContextOptions<ApplicationDbContext> options, ILoggerFactory loggerFactory,
-            IEnvironmentDiscovery environmentDiscovery) : base(options)
+
+        public ApplicationDbContext(DbContextOptions<ApplicationDbContext> options, ILoggerFactory loggerFactory) : base(options)
         {
             _loggerFactory = loggerFactory;
-            _environmentDiscovery = environmentDiscovery;
         }
-        
-        public DbSet<DataTable> DataTables { get; set; }
-        public DbSet<DataItem> DataItems { get; set; }
-        public DbSet<Index> Indexes { get; set; }
-        public DbSet<Relation> Relations { get; set; }
+
+        public DbSet<DataTable> DataTables { get; set; } = null!;
+        public DbSet<DataItem> DataItems { get; set; } = null!;
+        public DbSet<Index> Indexes { get; set; } = null!;
+        public DbSet<Relation> Relations { get; set; } = null!;
 
         protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
         {
@@ -51,21 +44,6 @@ namespace wasp.WebApi.Data
                 .IsRequired(false)
                 .OnDelete(DeleteBehavior.NoAction);
             
-        }
-    }
-    
-    public sealed class ApplicationDbContextFactory : IDesignTimeDbContextFactory<ApplicationDbContext>
-    {
-
-        public ApplicationDbContext CreateDbContext(string[] args)
-        {
-            IConfigurationService configurationService = new ConfigurationService();
-            IConfiguration configuration = configurationService.GetPlatformAgnosticConfig();
-
-            DbContextOptionsBuilder<ApplicationDbContext> optionsBuilder = new();
-            optionsBuilder.UseSqlServer(configuration.GetConnectionString("WaspSqlServerConnectionString"));
-
-            return new ApplicationDbContext(optionsBuilder.Options, new LoggerFactory(), new EnvironmentDiscovery());
         }
     }
 }
