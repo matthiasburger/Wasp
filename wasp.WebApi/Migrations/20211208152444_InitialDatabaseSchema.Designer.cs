@@ -2,6 +2,7 @@
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using wasp.WebApi.Data;
 
@@ -10,9 +11,10 @@ using wasp.WebApi.Data;
 namespace wasp.WebApi.Migrations
 {
     [DbContext(typeof(ApplicationDbContext))]
-    partial class ApplicationDbContextModelSnapshot : ModelSnapshot
+    [Migration("20211208152444_InitialDatabaseSchema")]
+    partial class InitialDatabaseSchema
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -38,16 +40,9 @@ namespace wasp.WebApi.Migrations
                         .HasColumnName("Name")
                         .HasColumnOrder(3);
 
-                    b.Property<string>("ParentId")
-                        .HasColumnType("nvarchar(10)")
-                        .HasColumnName("ParentId")
-                        .HasColumnOrder(4);
-
                     b.HasKey("Id");
 
                     b.HasIndex("ModuleId");
-
-                    b.HasIndex("ParentId");
 
                     b.ToTable("DataAreas");
                 });
@@ -232,13 +227,7 @@ namespace wasp.WebApi.Migrations
                         .WithMany("DataAreas")
                         .HasForeignKey("ModuleId");
 
-                    b.HasOne("wasp.WebApi.Data.Models.DataArea", "Parent")
-                        .WithMany("Children")
-                        .HasForeignKey("ParentId");
-
                     b.Navigation("Module");
-
-                    b.Navigation("Parent");
                 });
 
             modelBuilder.Entity("wasp.WebApi.Data.Models.DataField", b =>
@@ -304,8 +293,6 @@ namespace wasp.WebApi.Migrations
 
             modelBuilder.Entity("wasp.WebApi.Data.Models.DataArea", b =>
                 {
-                    b.Navigation("Children");
-
                     b.Navigation("DataFields");
                 });
 

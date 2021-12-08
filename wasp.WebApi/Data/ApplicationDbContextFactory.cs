@@ -12,7 +12,6 @@ namespace wasp.WebApi.Data
     [SuppressMessage("ReSharper", "UnusedType.Global", Justification = "Used by EF Core Tools")]
     public sealed class ApplicationDbContextFactory : IDesignTimeDbContextFactory<ApplicationDbContext>
     {
-
         public ApplicationDbContext CreateDbContext(string[] args)
         {
             IConfigurationService configurationService = new ConfigurationService();

@@ -1,51 +1,32 @@
-﻿using System.Collections;
-using System.Collections.Generic;
-using System.ComponentModel.DataAnnotations;
+﻿using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
+
+using wasp.WebApi.Data.SurrogateKeyGenerator;
 
 namespace wasp.WebApi.Data.Models
 {
-    public class SurrogateLookup
+    public class DataField : SurrogateBaseEntity<string, DefaultSurrogateKeyGenerator>
     {
-        private const string DefaultGeneratorClass = "";
+        [Key]
+        [Column("Id", Order = 1, TypeName = "nvarchar(10)"), Required]
+        public override string Id { get; set; } = null!;
         
-        [Key] 
-        public string DataTableId { get; set; } = null!;
-        
-        public string? CurrentPrimaryKey { get; set; }
-
-        public string GeneratorClass { get; set; } = DefaultGeneratorClass;
-    }
-    
-    public class Module
-    {
-        [Key, DatabaseGenerated(DatabaseGeneratedOption.None), Required]
-        public string Id { get; set; } = null!;
-
-        [Required]
-        public string Name { get; set; } = null!;
-
-        public ICollection<DataArea> DataAreas { get; set; } = new List<DataArea>();
-    }
-
-    public class DataArea
-    {
-        public string Id { get; set; } = null!;
-        public string? ModuleId { get; set; }
-        
-        public Module? Module { get; set; }
-        public ICollection<DataField> DataFields { get; set; } = new List<DataField>();
-    }
-    
-    public class DataField
-    {
-        public string Id { get; set; } = null!;
-
+        [Column("DataAreaId", Order = 2, TypeName = "nvarchar(10)"), Required]
         public string DataAreaId { get; set; } = null!;
+        
+        [Column("DataTableId", Order = 3, TypeName = "nvarchar(100)"), Required]
         public string? DataTableId { get; set; }
+        
+        [Column("DataItemId", Order = 4, TypeName = "nvarchar(300)")]
         public string? DataItemId { get; set; }
         
+        [ForeignKey("DataAreaId")]
         public DataArea DataArea { get; set; } = null!;
+        
+        [ForeignKey("DataTableId")]
+        public DataTable? DataTable { get; set; } = null!;
+        
+        [ForeignKey("DataItemId,DataTableId")]
         public DataItem? DataItem { get; set; }
     }
 }

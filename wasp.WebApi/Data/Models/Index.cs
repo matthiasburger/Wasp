@@ -1,4 +1,5 @@
-﻿using System.ComponentModel.DataAnnotations;
+﻿using System.Collections.Generic;
+using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
 using System.Diagnostics.CodeAnalysis;
 
@@ -22,6 +23,8 @@ namespace wasp.WebApi.Data.Models
         
         [Column("Type", Order = 1, TypeName = "tinyint")]
         public IndexType Type { get; set; }
+
+        public ICollection<Relation> Relations { get; set; } = new List<Relation>();
     }
     
     

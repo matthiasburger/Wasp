@@ -1,4 +1,5 @@
-﻿using System.ComponentModel.DataAnnotations;
+﻿using System.Collections.Generic;
+using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
 using System.Diagnostics.CodeAnalysis;
 
@@ -17,5 +18,7 @@ namespace wasp.WebApi.Data.Models
 
         [Column("SqlId", Order = 2, TypeName = "nvarchar(200)"), Required]
         public string SqlId { get; set; } = null!;
+
+        public ICollection<DataItem> DataItems { get; set; } = new List<DataItem>();
     }
 }

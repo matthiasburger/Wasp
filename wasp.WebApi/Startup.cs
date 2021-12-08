@@ -19,6 +19,7 @@ using wasp.WebApi.Exceptions;
 using wasp.WebApi.Services.Configuration;
 using wasp.WebApi.Services.DatabaseAccess;
 using wasp.WebApi.Services.DataDefinition;
+using wasp.WebApi.Services.PrimaryKey;
 using wasp.WebApi.Services.PythonEngine;
 using wasp.WebApi.Services.StaticServiceProvider;
 
@@ -49,6 +50,7 @@ namespace wasp.WebApi
 
             services.AddTransient<IDatabaseService, DatabaseService>();
             services.AddTransient<IDataDefinitionService, SqlServerDataDefinitionService>();
+            services.AddTransient<IPrimaryKeyService, PrimaryKeyService>();
 
             services.TryAddSingleton<IHttpContextAccessor, HttpContextAccessor>();
             services.AddSingleton<IServiceProviderProxy, HttpContextServiceProviderProxy>();

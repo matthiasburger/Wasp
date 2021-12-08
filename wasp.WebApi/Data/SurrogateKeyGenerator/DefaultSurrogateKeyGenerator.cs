@@ -5,14 +5,11 @@ using wasp.Core.Extensions;
 
 namespace wasp.WebApi.Data.SurrogateKeyGenerator
 {
-    public class DefaultSurrogateKeyGenerator : BaseSurrogateKeyGenerator
+    public class DefaultSurrogateKeyGenerator : BaseSurrogateKeyGenerator<string>
     {
-        public override string GetNextKey(string datatable)
+        public override string GetNextKey()
         {
-            // replace this by correct code
-            const string oldKey = "09AZ76";
-
-            char[] chars = oldKey.Select(x => x).Reverse().ToArray();
+            char[] chars = (CurrentValue ?? "000000").Select(x => x).Reverse().ToArray();
 
             bool countNextUp = false;
             char[] newChars = new char[chars.Length];

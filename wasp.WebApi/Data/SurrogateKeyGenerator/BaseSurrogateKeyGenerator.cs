@@ -1,7 +1,8 @@
 namespace wasp.WebApi.Data.SurrogateKeyGenerator
 {
-    public abstract class BaseSurrogateKeyGenerator : ISurrogateKeyGenerator
+    public abstract class BaseSurrogateKeyGenerator<TType> : ISurrogateKeyGenerator<TType>
     {
-        public abstract string GetNextKey(string datatable);
+        public TType? CurrentValue { get; set; }
+        public abstract TType GetNextKey();
     }
 }
