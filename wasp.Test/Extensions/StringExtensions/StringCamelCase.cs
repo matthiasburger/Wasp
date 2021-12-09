@@ -1,10 +1,8 @@
 ﻿using System;
-
 using IronSphere.Extensions;
-
 using Xunit;
 
-namespace wasp.Test.StringExtensions
+namespace wasp.Test.Extensions.StringExtensions
 {
     public class StringCamelCase
     {
@@ -29,6 +27,6 @@ namespace wasp.Test.StringExtensions
         [Theory]
         [InlineData("")]
         public void CamelCaseEmpty(string value)
-            => Assert.Equal(value, value.CamelCase());
+            => Assert.Equal(value, value.CamelCase()); 
     }
 }

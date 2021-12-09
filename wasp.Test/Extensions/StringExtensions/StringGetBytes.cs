@@ -1,11 +1,9 @@
 ﻿using System;
 using System.Text;
-
 using IronSphere.Extensions;
-
 using Xunit;
 
-namespace wasp.Test.StringExtensions
+namespace wasp.Test.Extensions.StringExtensions
 {
     public class StringGetBytes
     {
