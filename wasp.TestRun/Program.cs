@@ -21,23 +21,23 @@ namespace wasp.TestRun
     {
         public static void Main()
         {
-            DataTable project = new DataTable
+            DataTable project = new()
             {
                 Alias = "p1",
                 SqlId = "Project"
             };
-            DataTable task = new DataTable
+            DataTable task = new()
             {
                 Alias = "t1",
                 SqlId = "Task"
             };
             
-            IDataArea da = new DataArea()
+            IDataArea da = new DataArea
             {
                 Table = project,
                 KeyColumns = new List<DataItem>
                 {
-                    new DataItem
+                    new()
                     {
                         Table = project,
                         SqlId = "Id"
@@ -58,7 +58,7 @@ namespace wasp.TestRun
                         },
                         DataFields = new List<DataField>
                         {
-                            new DataField
+                            new()
                             {
                                 DataItem = new DataItem
                                 {
@@ -66,7 +66,7 @@ namespace wasp.TestRun
                                     SqlId = "Id"
                                 }
                             },
-                            new DataField
+                            new()
                             {
                                 DataItem = new DataItem
                                 {
@@ -81,7 +81,7 @@ namespace wasp.TestRun
                 
                 DataFields = new List<DataField>
                 {
-                    new DataField
+                    new()
                     {
                         DataItem = new DataItem
                         {
@@ -91,7 +91,7 @@ namespace wasp.TestRun
                         FilterFrom = "1"
 
                     },
-                    new DataField
+                    new()
                     {
                         DataItem = new DataItem
                         {
@@ -102,11 +102,8 @@ namespace wasp.TestRun
                 }
             };
 
-            Query query = da.BuildQuery();
-            var result = new SqlServerCompiler().Compile(query);
-
-
-            string sqlQuery = result.Sql;
+            QueryBuilder query = da.BuildQuery();
+            string sqlQuery = query.GetQuery();
         }
     }
 }
