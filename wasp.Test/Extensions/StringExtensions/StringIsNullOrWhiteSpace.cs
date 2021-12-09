@@ -1,10 +1,9 @@
 ﻿using IronSphere.Extensions;
-
 using Xunit;
 
-namespace wasp.Test.StringExtensions
+namespace wasp.Test.Extensions.StringExtensions
 {
-    public class StringIsNullOrEmpty
+    public class StringIsNullOrWhiteSpace
     {
         [Theory]
         [InlineData("    ")]
@@ -13,7 +12,7 @@ namespace wasp.Test.StringExtensions
         [InlineData("test")]
         [InlineData("   test   ")]
         public void NullOrEmpty(string data)
-            => Assert.Equal(string.IsNullOrEmpty(data), data.IsNullOrEmpty());
+            => Assert.Equal(string.IsNullOrWhiteSpace(data), data.IsNullOrWhiteSpace());
         
         [Theory]
         [InlineData("    ", "<none>")]
@@ -21,9 +20,9 @@ namespace wasp.Test.StringExtensions
         [InlineData(null, "<none>")]
         [InlineData("test", "<none>")]
         [InlineData("   test   ", "<none>")]
-        public void ValueNullOrEmpty(string data, string defaultValue)
+        public void ValueNullOrWhiteSpace(string data, string defaultValue)
         {
-            Assert.Equal(string.IsNullOrEmpty(data) ? defaultValue : data, data.ValueIfNullOrEmpty(defaultValue));
+            Assert.Equal(string.IsNullOrWhiteSpace(data) ? defaultValue : data, data.ValueIfNullOrWhiteSpace(defaultValue));
         }
     }
 }
