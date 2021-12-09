@@ -1,7 +1,7 @@
 ﻿using System;
 using System.Linq;
 
-using wasp.Core.Extensions;
+using IronSphere.Extensions;
 
 namespace wasp.WebApi.Data.SurrogateKeyGenerator
 {
