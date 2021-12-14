@@ -26,6 +26,19 @@ namespace wasp.Test.Extensions.DateTimeSpan
         }
         
         [Fact]
+        public void ConstructDifferentTypes()
+        {
+            IEnumerable<DateTimeSpanType> types = Toolbox.GetEnumValues<DateTimeSpanType>();
+            foreach (DateTimeSpanType dateTimeSpanType in types)
+            {
+                IronSphere.Extensions.DateTimeSpan span = new (DateTime.Today, dateTimeSpanType, 1);
+                Assert.True(span.End > span.Start);
+                Assert.Equal(1, span.Step);
+                Assert.Equal(dateTimeSpanType, span.SpanType);
+            }
+        }
+        
+        [Fact]
         public void ConstructEmpty()
         {
             DateTime firstOfWeek = DateTime.Today.GetFirstOfWeek();

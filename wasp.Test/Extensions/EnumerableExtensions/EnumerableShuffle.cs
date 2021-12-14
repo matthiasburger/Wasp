@@ -1,3 +1,4 @@
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using IronSphere.Extensions;
@@ -28,6 +29,13 @@ namespace wasp.Test.Extensions.EnumerableExtensions
             items = items.Randomize();
             
             Assert.False(items.Loops(x => x + 1));
+        }
+        [Fact]
+        public void RandomizeNull()
+        {
+            IEnumerable<int>? items = null;
+            Assert.Throws<ArgumentNullException>(()=>items!.Randomize());
+            Assert.Throws<ArgumentNullException>(()=>items!.Shuffle());
         }
     }
 }
