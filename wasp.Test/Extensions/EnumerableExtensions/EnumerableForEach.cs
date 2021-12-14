@@ -15,13 +15,16 @@ namespace wasp.Test.Extensions.EnumerableExtensions
         {
             StringBuilder sb = new(50);
             
+            Assert.True(sb.IsEmpty());
+            
             IEnumerable<int> values = 0.Range(50);
             
             values.ForEach(x => sb.Append((char)x), false);
             Assert.Empty(sb.ToString());
             
-            values.ForEach(x => sb.Append((char)x));
+            values.ForEach(x => sb.AppendIf(true, ((char)x).ToString()));
             Assert.Equal(50, sb.ToString().Length);
+            Assert.False(sb.IsEmpty());
         }
         
         [Fact]
