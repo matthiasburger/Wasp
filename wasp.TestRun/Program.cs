@@ -1,109 +1,154 @@
 ﻿using System.Collections.Generic;
+using System.Linq;
+using DynamicLinqCore;
+
+
 using SqlKata;
 using SqlKata.Compilers;
-using wasp.Core.DynamicQuery;
+
+using wasp.WebApi.Data.Models;
+
 
 namespace wasp.TestRun
 {
-    
-    public class DataArea : IDataArea
-    {
-        public DataTable Table { get; set; }
-
-        public IEnumerable<DataItem> KeyColumns { get; set; } = new List<DataItem>();
-        public string Columns { get; set; } = "*";
-        public IEnumerable<DataField> DataFields { get; set; }
-        public IEnumerable<IDataArea> SubAreas { get; set; } = new List<IDataArea>();
-        public IEnumerable<DataItem> ReferenceColumns { get; set; }
-    }
-    
     public class Program
     {
         public static void Main()
         {
             DataTable project = new()
             {
-                Alias = "p1",
                 SqlId = "Project"
             };
             DataTable task = new()
             {
-                Alias = "t1",
                 SqlId = "Task"
             };
-            
+            DataTable resource = new()
+            {
+                SqlId = "Resource"
+            };
+
+            DataItem projectId = new()
+            {
+                DataTable = project,
+                Id = "Id"
+            };
+            DataItem projectName = new()
+            {
+                DataTable = project,
+                Id = "Name"
+            };
+            DataItem taskProjectId = new()
+            {
+                DataTable = task,
+                Id = "ProjectId"
+            };
+            DataItem taskName = new()
+            {
+                DataTable = task,
+                Id = "Name"
+            };
+            DataItem taskId = new()
+            {
+                DataTable = task,
+                Id = "Id"
+            };
+            DataItem resourceId = new()
+            {
+                DataTable = resource,
+                Id = "Id"
+            };
+            DataItem resourceFullName = new()
+            {
+                DataTable = resource,
+                Id = "FullName"
+            };
+            DataItem projectProjectManagerId = new()
+            {
+                DataTable = project,
+                Id = "ProjectManagerId"
+            };
+
+            DataItem[] items = new List<DataItem>
+            {
+                projectId, projectName, projectProjectManagerId,
+                taskId, taskName, taskProjectId,
+                resourceId, resourceFullName
+            }.ToArray();
+
             IDataArea da = new DataArea
             {
-                Table = project,
-                KeyColumns = new List<DataItem>
-                {
-                    new()
-                    {
-                        Table = project,
-                        SqlId = "Id"
-                    }
-                },
-                SubAreas = new List<IDataArea>
+                DataTable = project,
+                Children = new List<DataArea>
                 {
                     new DataArea
                     {
-                        Table = task,
-                        ReferenceColumns = new []
+                        DataTable = task,
+                        DataAreaReferences = new List<DataAreaReference>()
                         {
-                            new DataItem
+                            new DataAreaReference
                             {
-                                Table = task,
-                                SqlId = "ProjectId"
+                                KeyDataItem = projectId,
+                                ReferenceDataItem = taskProjectId
                             }
                         },
                         DataFields = new List<DataField>
                         {
                             new()
                             {
-                                DataItem = new DataItem
-                                {
-                                    Table = task,
-                                    SqlId = "Id"
-                                }
+                                DataItem = taskId
                             },
                             new()
                             {
-                                DataItem = new DataItem
-                                {
-                                    Table = project,
-                                    SqlId = "Name"
-                                }
+                                DataItem = taskName
+                            },
+                            new()
+                            {
+                                DataItem = projectName
                             }
-                            
+                        }
+                    },
+                    new DataArea
+                    {
+                        DataTable = resource,
+                        DataAreaReferences = new List<DataAreaReference>()
+                        {
+                            new DataAreaReference
+                            {
+                                KeyDataItem = projectProjectManagerId,
+                                ReferenceDataItem = resourceId
+                            }
+                        },
+                        DataFields = new List<DataField>
+                        {
+                            new()
+                            {
+                                DataItem = resourceFullName
+                            }
                         }
                     }
                 },
-                
+
                 DataFields = new List<DataField>
                 {
                     new()
                     {
-                        DataItem = new DataItem
-                        {
-                            Table = project,
-                            SqlId = "Id",
-                        },         
+                        DataItem = projectId,
                         FilterFrom = "1"
-
                     },
                     new()
                     {
-                        DataItem = new DataItem
-                        {
-                            Table = project,
-                            SqlId = "Name"
-                        }
+                        DataItem = projectName,
+                        FilterFrom = "Pr%"
                     }
                 }
             };
 
             QueryBuilder query = da.BuildQuery();
             string sqlQuery = query.GetQuery();
+
+            
+
         }
     }
 }

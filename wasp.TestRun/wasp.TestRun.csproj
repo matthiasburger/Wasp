@@ -9,9 +9,11 @@
 
     <ItemGroup>
       <ProjectReference Include="..\wasp.Core\wasp.Core.csproj" />
+      <ProjectReference Include="..\wasp.WebApi\wasp.WebApi.csproj" />
     </ItemGroup>
 
     <ItemGroup>
+      <PackageReference Include="DynamicLinqCore" Version="0.1.5" />
       <PackageReference Include="SqlKata" Version="2.3.7" />
     </ItemGroup>
 

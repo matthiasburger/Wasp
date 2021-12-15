@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.Threading.Tasks;
 
 using Microsoft.AspNetCore.Mvc;
@@ -32,6 +33,142 @@ namespace wasp.WebApi.Controllers
             return Ok(new { ok = true, called_at = DateTime.Now });
         }
         
+        [HttpGet("demo")]
+        public async Task<ActionResult> OpenDemo()
+        {
+            #region demodata
+            DataTable project = new()
+            {
+                SqlId = "Project"
+            };
+            DataTable task = new()
+            {
+                SqlId = "Task"
+            };
+            DataTable resource = new()
+            {
+                SqlId = "Resource"
+            };
+
+            DataItem projectId = new()
+            {
+                DataTable = project,
+                Id = "Id"
+            };
+            DataItem projectName = new()
+            {
+                DataTable = project,
+                Id = "Name"
+            };
+            DataItem taskProjectId = new()
+            {
+                DataTable = task,
+                Id = "ProjectId"
+            };
+            DataItem taskName = new()
+            {
+                DataTable = task,
+                Id = "Name"
+            };
+            DataItem taskId = new()
+            {
+                DataTable = task,
+                Id = "Id"
+            };
+            DataItem resourceId = new()
+            {
+                DataTable = resource,
+                Id = "Id"
+            };
+            DataItem resourceFullName = new()
+            {
+                DataTable = resource,
+                Id = "FullName"
+            };
+            DataItem projectProjectManagerId = new()
+            {
+                DataTable = project,
+                Id = "ProjectManagerId"
+            };
+            #endregion
+
+            Module module = new()
+            {
+                DataAreas = new[]
+                {
+                    new DataArea
+                    {
+                        DataTable = project,
+                        Children = new List<DataArea>
+                        {
+                            new()
+                            {
+                                DataTable = task,
+                                DataAreaReferences = new[]
+                                {
+                                    new DataAreaReference
+                                    {
+                                        KeyDataItem = projectId,
+                                        ReferenceDataItem = taskProjectId
+                                    }
+                                },
+                                DataFields = new List<DataField>
+                                {
+                                    new()
+                                    {
+                                        DataItem = taskId
+                                    },
+                                    new()
+                                    {
+                                        DataItem = taskName
+                                    },
+                                    new()
+                                    {
+                                        DataItem = projectName
+                                    }
+                                }
+                            },
+                            new()
+                            {
+                                DataTable = resource,
+                                DataAreaReferences = new List<DataAreaReference>
+                                {
+                                    new()
+                                    {
+                                        KeyDataItem = projectProjectManagerId,
+                                        ReferenceDataItem = resourceId
+                                    }
+                                },
+                                DataFields = new List<DataField>
+                                {
+                                    new()
+                                    {
+                                        DataItem = resourceFullName
+                                    }
+                                }
+                            }
+                        },
+
+                        DataFields = new List<DataField>
+                        {
+                            new()
+                            {
+                                DataItem = projectId,
+                                FilterFrom = "1"
+                            },
+                            new()
+                            {
+                                DataItem = projectName,
+                                FilterFrom = "Pr%"
+                            }
+                        }
+                    }
+                }
+            };
+            
+            return Ok(new { ok = true, called_at = DateTime.Now });
+        }
+
         [HttpPost]
         public async Task<IActionResult> Create()
         {

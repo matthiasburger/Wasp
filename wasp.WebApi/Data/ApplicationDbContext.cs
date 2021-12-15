@@ -52,6 +52,19 @@ namespace wasp.WebApi.Data
                 .HasOne(x=>x.ReferenceDataItem)
                 .WithMany(x=>x.ReferenceRelations)
                 .HasForeignKey(x=>new{x.ReferenceDataItemId, x.ReferenceDataTableId});
+            
+            
+            modelBuilder.Entity<DataAreaReference>()
+                .HasOne(x => x.KeyDataItem)
+                .WithMany(x=>x.KeyDataAreaReference)         
+                .HasForeignKey(x=>new{x.KeyDataItemId, x.KeyDataItemDataTableId})
+                .OnDelete(DeleteBehavior.NoAction);
+            
+            modelBuilder.Entity<DataAreaReference>()
+                .HasOne(x=>x.ReferenceDataItem)
+                .WithMany(x=>x.ReferenceDataAreaReference)
+                .HasForeignKey(x=>new{x.ReferenceDataItemId, x.ReferenceDataTableId})
+                .OnDelete(DeleteBehavior.NoAction);
         }
 
         private static async Task _setSurrogatePrimaryKeysAsync(object entity)

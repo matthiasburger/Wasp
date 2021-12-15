@@ -3,6 +3,8 @@ using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
 using System.Diagnostics.CodeAnalysis;
 
+using wasp.WebApi.Data.Entity;
+
 namespace wasp.WebApi.Data.Models
 {
     [Table("DataItem")]
@@ -31,5 +33,11 @@ namespace wasp.WebApi.Data.Models
 
         public ICollection<Relation> KeyRelations { get; set; } = new List<Relation>();
         public ICollection<Relation> ReferenceRelations { get; set; } = new List<Relation>();
+        
+        public ICollection<DataAreaReference> KeyDataAreaReference { get; set; } = new List<DataAreaReference>();
+        public ICollection<DataAreaReference> ReferenceDataAreaReference { get; set; } = new List<DataAreaReference>();
+
+        
+        public string GetSqlId() => $"{DataTable.Alias}.{Name}";
     }
 }

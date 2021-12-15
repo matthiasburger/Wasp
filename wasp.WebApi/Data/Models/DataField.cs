@@ -28,5 +28,7 @@ namespace wasp.WebApi.Data.Models
         
         [ForeignKey("DataItemId,DataTableId")]
         public DataItem? DataItem { get; set; }
+
+        public string? FilterFrom { get; set; }
     }
 }

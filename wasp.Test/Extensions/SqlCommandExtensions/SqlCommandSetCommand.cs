@@ -28,7 +28,7 @@ namespace wasp.Test.Extensions.SqlCommandExtensions
             command.SetCommandWithParameters("select * from account where name = @name", new
             {
                 name = "test"
-            });
+            }); 
             Assert.True(command.Parameters.Contains("@name"));
         }
         

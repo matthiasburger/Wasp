@@ -3,11 +3,13 @@ using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
 using System.Diagnostics.CodeAnalysis;
 
+using wasp.WebApi.Data.Entity;
+
 namespace wasp.WebApi.Data.Models
 {
     [Table("DataTable")]
     [SuppressMessage("ReSharper", "ClassNeverInstantiated.Global", Justification = "Used by EF")]
-    public class DataTable
+    public class DataTable : IEntity<string>
     {
         [Column("Id", Order = 0, TypeName = "nvarchar(100)"), Required]
         [Key, DatabaseGenerated(DatabaseGeneratedOption.None)]
@@ -20,5 +22,17 @@ namespace wasp.WebApi.Data.Models
         public string SqlId { get; set; } = null!;
 
         public ICollection<DataItem> DataItems { get; set; } = new List<DataItem>();
+        
+        [NotMapped]
+        public string? Alias { get; set; }
+
+        
+        public string GetSqlId()
+        {
+            if (Alias is null)
+                return SqlId;
+            
+            return $"{SqlId} as {Alias}";
+        }
     }
 }

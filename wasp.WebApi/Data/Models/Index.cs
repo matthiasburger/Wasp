@@ -3,6 +3,8 @@ using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
 using System.Diagnostics.CodeAnalysis;
 
+using wasp.WebApi.Data.Entity;
+
 namespace wasp.WebApi.Data.Models
 {
     public enum IndexType : byte
@@ -15,7 +17,7 @@ namespace wasp.WebApi.Data.Models
     
     [Table("Index")]
     [SuppressMessage("ReSharper", "ClassNeverInstantiated.Global", Justification = "Used by EF")]
-    public class Index
+    public class Index : IEntity<string>
     {
         [Column("Id", Order = 0, TypeName = "nvarchar(300)"), Required]
         [Key, DatabaseGenerated(DatabaseGeneratedOption.None)]
