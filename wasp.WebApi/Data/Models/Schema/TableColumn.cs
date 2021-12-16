@@ -1,4 +1,5 @@
-﻿using SqlKata;
+﻿
+using System.ComponentModel.DataAnnotations.Schema;
 
 namespace wasp.WebApi.Data.Models.Schema
 {
@@ -11,12 +12,12 @@ namespace wasp.WebApi.Data.Models.Schema
         [Column("TABLE_SCHEMA")]
         public string TableSchema { get; set; } = null!;
         */
-        
-        [Column("TABLE_NAME")]
-        public string? TableName { get; set; }
+
+        [Column("TABLE_NAME")] 
+        public string TableName { get; set; } = null!;
         
         [Column("COLUMN_NAME")]
-        public string? ColumnName { get; set; }
+        public string ColumnName { get; set; } = null!;
         
         /*
         [Column("ORDINAL_POSITION")]

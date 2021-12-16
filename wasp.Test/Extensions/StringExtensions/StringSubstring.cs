@@ -12,6 +12,7 @@ namespace wasp.Test.Extensions.StringExtensions
         {
             Assert.Equal("name ist matthias", fullString.Substring("name", "!"));
             Assert.Equal("name ist matthias", fullString.SubString("name", "!"));
+            Assert.Equal("name ist matthias!", fullString.Substring("name", null));
         }
 
         [Fact]
@@ -20,7 +21,6 @@ namespace wasp.Test.Extensions.StringExtensions
             const string testValue = "test";
             
             Assert.Throws<ArgumentException>(() => testValue.Substring("", "b")); // no start
-            Assert.Throws<ArgumentException>(() => testValue.Substring("a", "")); // no end
 
             Assert.Null(testValue.Substring("a", "b")); // start doesn't exist
             Assert.Null(testValue.Substring("e", "b")); // end doesn't exist

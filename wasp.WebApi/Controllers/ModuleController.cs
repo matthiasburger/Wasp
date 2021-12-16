@@ -166,6 +166,8 @@ namespace wasp.WebApi.Controllers
                 }
             };
             
+            
+            
             return Ok(new { ok = true, called_at = DateTime.Now });
         }
 
