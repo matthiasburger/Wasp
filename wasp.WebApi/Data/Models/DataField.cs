@@ -30,5 +30,8 @@ namespace wasp.WebApi.Data.Models
         public DataItem? DataItem { get; set; }
 
         public string? FilterFrom { get; set; }
+        
+        [NotMapped]
+        public int Ordinal { get; set; }
     }
 }

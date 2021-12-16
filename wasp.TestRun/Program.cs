@@ -145,7 +145,7 @@ namespace wasp.TestRun
             };
 
             QueryBuilder query = da.BuildQuery();
-            string sqlQuery = query.GetQuery();
+            QueryBuilder.QueryResult sqlQuery = query.GetQuery();
 
             
 

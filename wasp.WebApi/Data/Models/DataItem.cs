@@ -38,6 +38,6 @@ namespace wasp.WebApi.Data.Models
         public ICollection<DataAreaReference> ReferenceDataAreaReference { get; set; } = new List<DataAreaReference>();
 
         
-        public string GetSqlId() => $"{DataTable.Alias}.{Name}";
+        public string GetSqlId() => $"{DataTable.Alias}.{Id}";
     }
 }

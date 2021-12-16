@@ -74,9 +74,12 @@ namespace wasp.WebApi.Data.Models
     
     public class QueryBuilder
     {
+        public record QueryResult(string Sql, IDictionary<string, object> Bindings);
+        
         private readonly Query _query;
 
         private readonly HashSet<string> _usedTableAliases = new ();
+        private int ordinal = 0;
 
         public QueryBuilder(DataTable dataTable)
         {
@@ -85,11 +88,11 @@ namespace wasp.WebApi.Data.Models
             _query = new Query(dataTable.GetSqlId());
         }
 
-        public string GetQuery()
+        public QueryResult GetQuery()
         {
             SqlServerCompiler compiler = new ();
             SqlResult? result = compiler.Compile(_query);
-            return result.Sql;
+            return new QueryResult(result.Sql, result.NamedBindings);
         }
         
         private void _setTableAlias(DataTable dataTable)
@@ -108,9 +111,18 @@ namespace wasp.WebApi.Data.Models
             _usedTableAliases.Add(newAlias);
         }
 
+        private void _setOrdinal(DataField dataField)
+        {
+            dataField.Ordinal = ordinal++;
+        }
+
         public void AddDataArea(IDataArea dataArea)
         {
-            _query.Select(dataArea.DataFields.Select(x=>x.DataItem.GetSqlId()).ToArray());
+            foreach (DataField dataField in dataArea.DataFields)
+            {
+                _setOrdinal(dataField);
+                _query.Select(dataField.DataItem.GetSqlId());
+            }
 
             foreach (DataField dataField in dataArea.DataFields)
             {
