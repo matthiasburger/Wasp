@@ -3,35 +3,35 @@ using System.Text;
 using IronSphere.Extensions;
 using Xunit;
 
-namespace wasp.Test.Extensions.ByteArrayExtensions
-{
-    public class ByteArrayGetString
-    {
-        [Theory]
-        [InlineData("utf-8")]
-        [InlineData("utf-32")]
-        public void GetString(string encodingStr)
-        {
-            Encoding encoding = Encoding.GetEncoding(encodingStr);
-            byte[] result = EncodingText.GetBytes(encoding);
+namespace wasp.Test.Extensions.ByteArrayExtensions;
 
-            Assert.Equal(encoding.GetString(result), EncodingText);
-        }
-        [Fact]
-        public void GetBytesDefaultEncoding()
-        {
-            byte[] result = EncodingText.GetBytes();
-            Assert.Equal(Encoding.UTF8.GetString(result), EncodingText);
-        }
+public class ByteArrayGetString
+{
+    [Theory]
+    [InlineData("utf-8")]
+    [InlineData("utf-32")]
+    public void GetString(string encodingStr)
+    {
+        Encoding encoding = Encoding.GetEncoding(encodingStr);
+        byte[] result = EncodingText.GetBytes(encoding);
+
+        Assert.Equal(encoding.GetString(result), EncodingText);
+    }
+    [Fact]
+    public void GetBytesDefaultEncoding()
+    {
+        byte[] result = EncodingText.GetBytes();
+        Assert.Equal(Encoding.UTF8.GetString(result), EncodingText);
+    }
         
-        [Fact]
-        public void GetBytesNull()
-        {
-            const byte[]? bytes = null;
-            Assert.Throws<ArgumentNullException>(() => bytes!.GetString());
-        }
+    [Fact]
+    public void GetBytesNull()
+    {
+        const byte[]? bytes = null;
+        Assert.Throws<ArgumentNullException>(() => bytes!.GetString());
+    }
         
-        private const string EncodingText = @"Mathematics and Sciences:
+    private const string EncodingText = @"Mathematics and Sciences:
 
   ∮ E⋅da = Q,  n → ∞, ∑ f(i) = ∏ g(i), ∀x∈ℝ: ⌈x⌉ = −⌊−x⌋, α ∧ ¬β = ¬(¬α ∨ β),
 
@@ -69,5 +69,4 @@ Nicer typography in plain text files:
   ╚══════════════════════════════════════════╝
 
 Greek (in Polytonic):";
-    }
 }

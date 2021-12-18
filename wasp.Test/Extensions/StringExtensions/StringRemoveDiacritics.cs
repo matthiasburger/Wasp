@@ -1,16 +1,15 @@
 using IronSphere.Extensions;
 using Xunit;
 
-namespace wasp.Test.Extensions.StringExtensions
+namespace wasp.Test.Extensions.StringExtensions;
+
+public class StringRemoveDiacritics
 {
-    public class StringRemoveDiacritics
+    [Fact]
+    public void RemoveDiacritics()
     {
-        [Fact]
-        public void RemoveDiacritics()
-        {
-            string? value = null;
-            Assert.Null(value.RemoveDiacritics());
-            Assert.Equal("aeiouaeiouaeioucaou", "áéíóúàèìòùâêîôûçäöü".RemoveDiacritics());
-        }
+        string? value = null;
+        Assert.Null(value.RemoveDiacritics());
+        Assert.Equal("aeiouaeiouaeioucaou", "áéíóúàèìòùâêîôûçäöü".RemoveDiacritics());
     }
 }

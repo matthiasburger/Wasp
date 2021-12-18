@@ -37,7 +37,7 @@ namespace wasp.WebApi.Controllers
 
         private async Task _createPrimaryKeyData()
         {
-            string query = $@"
+            const string query = @"
  select schema_name(tab.schema_id) as [schema_name], 
     pk.[name] as pk_name,
     substring(column_names, 1, len(column_names)-1) as [columns],
@@ -88,7 +88,7 @@ order by schema_name(tab.schema_id),
 
         private async Task _createForeignKeyData()
         {
-            string query = $@"
+            const string query = @"
 SELECT
    FK.[name] AS ForeignKeyConstraintName
   ,SCHEMA_NAME(FT.schema_id) + '.' + FT.[name] AS ForeignTable
@@ -175,7 +175,7 @@ FROM
 
         private async Task _createColumnData()
         {
-            IEnumerable<TableColumn> columns = await _context.SqlQuery<TableColumn>($@"
+            IEnumerable<TableColumn> columns = await _context.SqlQuery<TableColumn>(@"
 SELECT COLUMN_NAME, TABLE_NAME
 FROM INFORMATION_SCHEMA.COLUMNS
 ");
@@ -192,7 +192,7 @@ FROM INFORMATION_SCHEMA.COLUMNS
 
         private async Task _createDataTableData()
         {
-            IEnumerable<Table> tables = await _context.SqlQuery<Table>($@"
+            IEnumerable<Table> tables = await _context.SqlQuery<Table>(@"
 SELECT * 
 FROM INFORMATION_SCHEMA.TABLES 
 WHERE TABLE_TYPE = 'BASE TABLE'

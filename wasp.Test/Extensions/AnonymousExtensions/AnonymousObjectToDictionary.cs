@@ -3,23 +3,22 @@ using System.Collections.Generic;
 using IronSphere.Extensions;
 using Xunit;
 
-namespace wasp.Test.Extensions.AnonymousExtensions
+namespace wasp.Test.Extensions.AnonymousExtensions;
+
+public class AnonymousObjectToDictionary
 {
-    public class AnonymousObjectToDictionary
+    [Fact]
+    public void ToDictionary()
     {
-        [Fact]
-        public void ToDictionary()
-        {
-            var anonymous = new { name="Liselotte" };
+        var anonymous = new { name="Liselotte" };
 
-            IDictionary<string, string> dictionary = anonymous.ToDictionary<string>();
-            Assert.True(dictionary.ContainsKey("name"));
-            Assert.Equal(dictionary["name"], anonymous.name);
+        IDictionary<string, string> dictionary = anonymous.ToDictionary<string>();
+        Assert.True(dictionary.ContainsKey("name"));
+        Assert.Equal(dictionary["name"], anonymous.name);
 
-            object? anonymousNull = null;
+        object? anonymousNull = null;
 
-            Assert.Throws<ArgumentNullException>(() => anonymousNull.ToDictionary<string>());
-            Assert.Throws<InvalidCastException>(() => dictionary.ToDictionary<double>());
-        }
+        Assert.Throws<ArgumentNullException>(() => anonymousNull.ToDictionary<string>());
+        Assert.Throws<InvalidCastException>(() => dictionary.ToDictionary<double>());
     }
 }

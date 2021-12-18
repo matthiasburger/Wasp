@@ -1,15 +1,14 @@
 using IronSphere.Extensions.Reflection;
 using Xunit;
 
-namespace wasp.Test.Extensions.Reflection.TypeExtensions
+namespace wasp.Test.Extensions.Reflection.TypeExtensions;
+
+public class TypeIsNullableType
 {
-    public class TypeIsNullableType
+    [Fact]
+    public void IsNullableType()
     {
-        [Fact]
-        public void IsNullableType()
-        {
-            Assert.False(typeof(string).IsNullableType());
-            Assert.True(typeof(int?).IsNullableType());
-        }
+        Assert.False(typeof(string).IsNullableType());
+        Assert.True(typeof(int?).IsNullableType());
     }
 }

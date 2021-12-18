@@ -1,20 +1,19 @@
 using IronSphere.Extensions;
 using Xunit;
 
-namespace wasp.Test.Extensions.DoubleExtensions
+namespace wasp.Test.Extensions.DoubleExtensions;
+
+public class DoubleBetween
 {
-    public class DoubleBetween
+    [Fact]
+    public void Between()
     {
-        [Fact]
-        public void Between()
-        {
-            const double b = 5;
-            const double lower = 2;
-            const double higher = 10;
+        const double b = 5;
+        const double lower = 2;
+        const double higher = 10;
             
-            Assert.True(b.Between(lower, higher));
-            Assert.False(higher.Between(lower, b));
-            Assert.False(lower.Between(b, higher));
-        }
+        Assert.True(b.Between(lower, higher));
+        Assert.False(higher.Between(lower, b));
+        Assert.False(lower.Between(b, higher));
     }
 }

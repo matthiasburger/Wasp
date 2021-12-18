@@ -2,20 +2,19 @@ using System;
 using IronSphere.Extensions;
 using Xunit;
 
-namespace wasp.Test.Extensions.GenericExtensions
+namespace wasp.Test.Extensions.GenericExtensions;
+
+public class GenericToString
 {
-    public class GenericToString
+    private record Person(string? Name);
+
+    [Fact]
+    public void ToStringTest()
     {
-        private record Person(string? Name);
+        Person p = new("Markus");
+        Assert.Equal($"Hello {p.Name}", p.ToString(x => $"Hello {x.Name}"));
 
-        [Fact]
-        public void ToStringTest()
-        {
-            Person p = new("Markus");
-            Assert.Equal($"Hello {p.Name}", p.ToString(x => $"Hello {x.Name}"));
-
-            Func<Person, string>? expression = null;
-            Assert.Throws<ArgumentNullException>(() => p.ToString(expression!));
-        }
+        Func<Person, string>? expression = null;
+        Assert.Throws<ArgumentNullException>(() => p.ToString(expression!));
     }
 }

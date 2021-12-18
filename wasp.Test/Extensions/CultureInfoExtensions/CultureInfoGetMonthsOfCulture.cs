@@ -5,25 +5,24 @@ using System.Linq;
 using IronSphere.Extensions;
 using Xunit;
 
-namespace wasp.Test.Extensions.CultureInfoExtensions
+namespace wasp.Test.Extensions.CultureInfoExtensions;
+
+public class CultureInfoGetMonthsOfCulture
 {
-    public class CultureInfoGetMonthsOfCulture
+    [Fact]
+    public void GetMonthsOfCulture()
     {
-        [Fact]
-        public void GetMonthsOfCulture()
-        {
-            IEnumerable<(int, string)> months = new CultureInfo("de-DE")
-                .GetMonthsOfCulture().ToArray();
+        IEnumerable<(int, string)> months = new CultureInfo("de-DE")
+            .GetMonthsOfCulture().ToArray();
             
-            Assert.Equal(12, months.Count());
-            Assert.True(months.All(x=>x.Item2.Length > 0));
-        }
+        Assert.Equal(12, months.Count());
+        Assert.True(months.All(x=>x.Item2.Length > 0));
+    }
         
-        [Fact]
-        public void GetMonthsOfCultureNull()
-        {
-            CultureInfo? cultureInfo = null;
-            Assert.Throws<ArgumentNullException>(() => cultureInfo.GetMonthsOfCulture());
-        }
+    [Fact]
+    public void GetMonthsOfCultureNull()
+    {
+        CultureInfo? cultureInfo = null;
+        Assert.Throws<ArgumentNullException>(() => cultureInfo.GetMonthsOfCulture());
     }
 }

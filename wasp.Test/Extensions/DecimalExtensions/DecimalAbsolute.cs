@@ -1,16 +1,15 @@
 using IronSphere.Extensions;
 using Xunit;
 
-namespace wasp.Test.Extensions.DecimalExtensions
+namespace wasp.Test.Extensions.DecimalExtensions;
+
+public class DecimalAbsolute
 {
-    public class DecimalAbsolute
+    [Fact]
+    public void Absolute()
     {
-        [Fact]
-        public void Absolute()
-        {
-            Assert.Equal(3m, (-3m).Absolute());
-            Assert.Equal(3m, 3m.Absolute());
-            Assert.Equal(0m, 0m.Absolute());
-        }
+        Assert.Equal(3m, (-3m).Absolute());
+        Assert.Equal(3m, 3m.Absolute());
+        Assert.Equal(0m, 0m.Absolute());
     }
 }

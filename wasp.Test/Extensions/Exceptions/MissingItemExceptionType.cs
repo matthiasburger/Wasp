@@ -4,46 +4,45 @@ using IronSphere.Extensions.Exceptions;
 
 using Xunit;
 
-namespace wasp.Test.Extensions.Exceptions
+namespace wasp.Test.Extensions.Exceptions;
+
+public class MissingItemExceptionType
 {
-    public class MissingItemExceptionType
+    [Fact]
+    public void OnCreateInstanceOneArg()
     {
-        [Fact]
-        public void OnCreateInstanceOneArg()
+        try
         {
-            try
-            {
-                throw new MissingItemException("this item doesnt exist");
-            }
-            catch (Exception e) when (e is MissingItemException)
-            {
-                Assert.Equal("this item doesnt exist", e.Message);
-            }
+            throw new MissingItemException("this item doesnt exist");
         }
-        [Fact]
-        public void OnCreateInstanceTwoArg()
+        catch (Exception e) when (e is MissingItemException)
         {
-            try
-            {
-                throw new MissingItemException("this item doesnt exist", new Exception("inner one"));
-            }
-            catch (Exception e) when (e is MissingItemException)
-            {
-                Assert.Equal("this item doesnt exist", e.Message);
-                Assert.Equal("inner one", e.InnerException!.Message);
-            }
+            Assert.Equal("this item doesnt exist", e.Message);
         }
-        [Fact]
-        public void OnCreateInstanceNoArg()
+    }
+    [Fact]
+    public void OnCreateInstanceTwoArg()
+    {
+        try
         {
-            try
-            {
-                throw new MissingItemException();
-            }
-            catch (Exception e) when (e is MissingItemException)
-            {
-                Assert.StartsWith($"Exception of type '{e.GetType().FullName}' was thrown.", e.Message);
-            }
+            throw new MissingItemException("this item doesnt exist", new Exception("inner one"));
+        }
+        catch (Exception e) when (e is MissingItemException)
+        {
+            Assert.Equal("this item doesnt exist", e.Message);
+            Assert.Equal("inner one", e.InnerException!.Message);
+        }
+    }
+    [Fact]
+    public void OnCreateInstanceNoArg()
+    {
+        try
+        {
+            throw new MissingItemException();
+        }
+        catch (Exception e) when (e is MissingItemException)
+        {
+            Assert.StartsWith($"Exception of type '{e.GetType().FullName}' was thrown.", e.Message);
         }
     }
 }

@@ -1,16 +1,15 @@
 using IronSphere.Extensions;
 using Xunit;
 
-namespace wasp.Test.Extensions.FloatExtensions
+namespace wasp.Test.Extensions.FloatExtensions;
+
+public class FloatAbsolute
 {
-    public class FloatAbsolute
+    [Fact]
+    public void Absolute()
     {
-        [Fact]
-        public void Absolute()
-        {
-            Assert.Equal(3f, (-3f).Absolute());
-            Assert.Equal(3f, 3f.Absolute());
-            Assert.Equal(0f, 0f.Absolute());
-        }
+        Assert.Equal(3f, (-3f).Absolute());
+        Assert.Equal(3f, 3f.Absolute());
+        Assert.Equal(0f, 0f.Absolute());
     }
 }

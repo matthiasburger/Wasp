@@ -3,38 +3,38 @@ using System.Text;
 using IronSphere.Extensions;
 using Xunit;
 
-namespace wasp.Test.Extensions.StringExtensions
+namespace wasp.Test.Extensions.StringExtensions;
+
+public class StringGetBytes
 {
-    public class StringGetBytes
+    [Theory]
+    [InlineData("utf-8")]
+    [InlineData("utf-32")]
+    [InlineData("us-ascii")]
+    public void GetBytes(string encodingStr)
     {
-        [Theory]
-        [InlineData("utf-8")]
-        [InlineData("utf-32")]
-        [InlineData("us-ascii")]
-        public void GetBytes(string encodingStr)
-        {
-            Encoding encoding = Encoding.GetEncoding(encodingStr);
+        Encoding encoding = Encoding.GetEncoding(encodingStr);
 
-            byte[] result = EncodingText.GetBytes(encoding);
-            Assert.Equal(encoding.GetBytes(EncodingText), result);
-        }
-        [Fact]
-        public void GetBytesDefaultEncoding()
-        {
-            byte[] result = EncodingText.GetBytes();
-            Assert.Equal(Encoding.UTF8.GetBytes(EncodingText), result);
-        }
+        byte[] result = EncodingText.GetBytes(encoding);
+        Assert.Equal(encoding.GetBytes(EncodingText), result);
+    }
+    [Fact]
+    public void GetBytesDefaultEncoding()
+    {
+        byte[] result = EncodingText.GetBytes();
+        Assert.Equal(Encoding.UTF8.GetBytes(EncodingText), result);
+    }
         
-        [Fact]
-        public void GetBytesNull()
-        {
-            const string? stringToGetBytes = null;
-            Assert.Throws<ArgumentNullException>(() => stringToGetBytes.GetBytes());
-        }
+    [Fact]
+    public void GetBytesNull()
+    {
+        const string? stringToGetBytes = null;
+        Assert.Throws<ArgumentNullException>(() => stringToGetBytes.GetBytes());
+    }
 
 
 
-        private const string EncodingText = @"Mathematics and Sciences:
+    private const string EncodingText = @"Mathematics and Sciences:
 
   ∮ E⋅da = Q,  n → ∞, ∑ f(i) = ∏ g(i), ∀x∈ℝ: ⌈x⌉ = −⌊−x⌋, α ∧ ¬β = ¬(¬α ∨ β),
 
@@ -72,5 +72,4 @@ Nicer typography in plain text files:
   ╚══════════════════════════════════════════╝
 
 Greek (in Polytonic):";
-    }
 }

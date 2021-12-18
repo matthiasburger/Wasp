@@ -203,56 +203,64 @@ namespace wasp.WebApi.Controllers
             QueryBuilder? queryBuilder = module.DataAreas.First().As<IDataArea>()?.BuildQuery();
             var (sql, parameters) = queryBuilder.GetQuery();
             
-            await using SqlConnection connection = new (@"Server=(localdb)\mssqllocaldb;Database=wasp_test;Trusted_Connection=True;MultipleActiveResultSets=true");
+            await using SqlConnection connection = new (@"Server=(localdb)\mssqllocaldb;Database=wasp;Trusted_Connection=True;MultipleActiveResultSets=true");
             await using SqlCommand cmd = new SqlCommand(sql, connection).SetParameters(parameters);
 
             connection.Open();
 
             MtsModule mtsModule = new ();
-            MtsDataArea mtsDataArea = new ();
             System.Data.DataTable dt = new();
             using (SqlDataAdapter dataAdapter = new SqlDataAdapter(cmd))
             {
                 dataAdapter.Fill(dt);
             }
 
-            foreach (var dataArea in module.DataAreas)
+            IEnumerable<DatabaseResult> result = dt.Rows.Cast<DataRow>().Select(x => new DatabaseResult(x)).ToList();
+
+            foreach (DataArea moduleDataArea in module.DataAreas)
             {
-                IEnumerable<int> ordinal = dataArea.DataFields.Select(x =>x.Ordinal);
-                
-                
-                IEnumerable<IGrouping<object, DataRow>>? res = dt.Rows.Cast<DataRow>().GroupBy(x => x[ordinal.First()]);    
+                mtsModule.DataAreas.Add(_buildDataArea(moduleDataArea, result));
             }
             
+            string serMts = JsonConvert.SerializeObject(mtsModule);
+
+            return Ok(mtsModule);
+        }
+
+        private MtsDataArea _buildDataArea(DataArea moduleDataArea, IEnumerable<DatabaseResult> result)
+        {
+            MtsDataArea dataArea = new ();
             
-            
-            await using (SqlDataReader reader = await cmd.ExecuteReaderAsync())
+            int[] ordinals = moduleDataArea.DataFields.Select(x => x.Ordinal).ToArray();
+            IEnumerable<IGrouping<object, DatabaseResult>> gr = result.GroupBy(x => x.GetGrouping(ordinals));
+
+            foreach (IGrouping<object,DatabaseResult> grouping in gr)
             {
-                while (reader.Read())
+                IEnumerable<DatabaseResult> nextResult = grouping;
+                DatabaseResult key = grouping.First();
+
+                MtsRecord mtsRecord = new MtsRecord();
+                
+                dataArea.Records.Add(mtsRecord);
+
+                foreach (DataArea subArea in moduleDataArea.Children)
                 {
-                    MtsRecord record = new ();
-
-                    for (int i = 0; i < reader.FieldCount; i++)
-                    {
-                        MtsDataField mtsDataField = new ()
-                        {
-                            Value = reader[i]
-                        };
-
-                        record.DataFields.Add(mtsDataField);
-                    }
-
-                    mtsDataArea.Records.Add(record);
+                    mtsRecord.DataArea.Add(_buildDataArea(subArea, nextResult));
+                }
+                
+                foreach (DataField dfs in moduleDataArea.DataFields)
+                {
+                    int ordinal = dfs.Ordinal;
+                    DataItem item = dfs.DataItem;
+                    MtsDataField field = key.GetDataField(ordinal);
+                    field.Name = item.Id;
+                    mtsRecord.DataFields.Add(field);
                 }
             }
-            mtsModule.DataAreas.Add(mtsDataArea);
 
-            string serMts = JsonConvert.SerializeObject(mtsModule);
-            
-            return Ok(new { ok = true, called_at = DateTime.Now });
+            return dataArea;
         }
-    
-    
+
 
         [HttpPost]
         public async Task<IActionResult> Create()
@@ -266,6 +274,63 @@ namespace wasp.WebApi.Controllers
             await _dbContext.SaveChangesAsync();
             
             return Ok(new { ok = true, called_at = DateTime.Now });
+        }
+    }
+
+    public class DatabaseResult : IEqualityComparer<DatabaseResult>
+    {
+        private readonly IEnumerable<MtsDataField> _dataFields;
+
+        public DatabaseResult(DataRow dataRow)
+        {
+            int columnLength = dataRow.Table.Columns.Count;
+
+            MtsDataField[] dataFields = new MtsDataField[columnLength];
+
+            for (int columnIndex = 0; columnIndex < columnLength; columnIndex++)
+            {
+                dataFields[columnIndex] = new MtsDataField
+                {
+                    Value = dataRow[columnIndex],
+                    Ordinal = columnIndex
+                };
+            }
+
+            _dataFields = dataFields;
+        }
+
+        private int[] _ordinals;
+        
+        public object GetGrouping(int[] ordinals)
+        {
+            _ordinals = ordinals;
+            
+            return T();
+        }
+
+        public string T()
+        {
+            return string.Join("-", _dataFields.Where(w => _ordinals.Contains(w.Ordinal)).Select(s => s.Value));
+        }
+
+        public MtsDataField GetDataField(int ordinal)
+        {
+            return _dataFields.First(x => x.Ordinal == ordinal);
+        }
+        
+        public bool Equals(DatabaseResult? x, DatabaseResult? y)
+        {
+            if (ReferenceEquals(x, y)) return true;
+            if (ReferenceEquals(x, null)) return false;
+            if (ReferenceEquals(y, null)) return false;
+            
+            return x.GetType() == y.GetType() 
+                   && x.T().Equals(y.T());
+        }
+
+        public int GetHashCode(DatabaseResult obj)
+        {
+            return obj.T().GetHashCode();
         }
     }
 }
