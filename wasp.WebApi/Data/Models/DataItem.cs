@@ -3,7 +3,7 @@ using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
 using System.Diagnostics.CodeAnalysis;
 
-using wasp.WebApi.Data.Entity;
+using wasp.WebApi.Data.Mts;
 
 namespace wasp.WebApi.Data.Models
 {
@@ -39,5 +39,16 @@ namespace wasp.WebApi.Data.Models
 
         
         public string GetSqlId() => $"{DataTable.Alias}.{Id}";
+        
+        public MtsDataItemInfo GetDataItemInfo ()
+        {
+            return new MtsDataItemInfo
+            {
+                Id = Id,
+                DataTableId = DataTableId,
+                Name = Name,
+                PythonId = PythonId
+            };
+        }
     }
 }

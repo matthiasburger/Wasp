@@ -4,7 +4,7 @@ using System.Linq;
 using System.Threading.Tasks;
 
 using Microsoft.AspNetCore.Mvc;
-
+using Microsoft.EntityFrameworkCore;
 using wasp.WebApi.Data;
 using wasp.WebApi.Data.Extensions;
 using wasp.WebApi.Data.Models;
@@ -27,11 +27,16 @@ namespace wasp.WebApi.Controllers
         [HttpGet]
         public async Task<ActionResult> Run()
         {
+            await _context.Database.ExecuteSqlRawAsync(@"delete from [Relation]");
+            await _context.Database.ExecuteSqlRawAsync(@"delete from [Index]");
+            await _context.Database.ExecuteSqlRawAsync(@"delete from [DataItem]");
+            await _context.Database.ExecuteSqlRawAsync(@"delete from [DataTable]");
+            
             await _createDataTableData();
             await _createColumnData();
             await _createForeignKeyData();
             await _createPrimaryKeyData();
-
+            
             return Ok();
         }
 

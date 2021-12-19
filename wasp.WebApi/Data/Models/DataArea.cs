@@ -10,6 +10,7 @@ using SqlKata;
 using SqlKata.Compilers;
 
 using wasp.WebApi.Data.Entity;
+using wasp.WebApi.Data.Mts;
 using wasp.WebApi.Data.SurrogateKeyGenerator;
 
 namespace wasp.WebApi.Data.Models
@@ -38,13 +39,23 @@ namespace wasp.WebApi.Data.Models
         [ForeignKey("ParentId")]
         public DataArea? Parent { get; set; }
 
-        [ForeignKey("TableId")] 
+        [ForeignKey("DataTableId")] 
         public DataTable DataTable { get; set; } = null!;
         
         public ICollection<DataField> DataFields { get; set; } = new List<DataField>();
         
         public ICollection<DataArea> Children { get; set; } = new List<DataArea>();
-        
+        public MtsDataAreaInfo GetDataAreaInfo()
+        {
+            return new MtsDataAreaInfo
+            {
+                Id = Id,
+                Name = Name,
+                DataTableId = DataTableId,
+                ModuleId = ModuleId
+            };
+        }
+
         public ICollection<DataAreaReference> DataAreaReferences { get; set; } = new List<DataAreaReference>();
     }
     
@@ -70,6 +81,8 @@ namespace wasp.WebApi.Data.Models
             
             return queryBuilder;
         }
+
+        MtsDataAreaInfo GetDataAreaInfo();
     }
     
     public class QueryBuilder
@@ -137,8 +150,11 @@ namespace wasp.WebApi.Data.Models
 
             _query.Join(subArea.DataTable.GetSqlId(), join =>
             {
-                return subArea.DataAreaReferences.Aggregate(join, (current, reference) => current.On(reference.ReferenceDataItem.GetSqlId(), reference.KeyDataItem.GetSqlId()));
-            },"inner join");
+                Join result = @join;
+                foreach (DataAreaReference reference in subArea.DataAreaReferences) 
+                    result = result.On(reference.ReferenceDataItem.GetSqlId(), reference.KeyDataItem.GetSqlId());
+                return result;
+            },"left join");
             
             foreach (DataArea da in subArea.Children)
                 Join(da);

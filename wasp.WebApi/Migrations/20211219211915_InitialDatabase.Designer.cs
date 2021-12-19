@@ -11,8 +11,8 @@ using wasp.WebApi.Data;
 namespace wasp.WebApi.Migrations
 {
     [DbContext(typeof(ApplicationDbContext))]
-    [Migration("20211215150024_AddedDataAreaReferenceToDataArea")]
-    partial class AddedDataAreaReferenceToDataArea
+    [Migration("20211219211915_InitialDatabase")]
+    partial class InitialDatabase
     {
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
@@ -51,16 +51,13 @@ namespace wasp.WebApi.Migrations
                         .HasColumnName("ParentId")
                         .HasColumnOrder(4);
 
-                    b.Property<string>("TableId")
-                        .HasColumnType("nvarchar(100)");
-
                     b.HasKey("Id");
+
+                    b.HasIndex("DataTableId");
 
                     b.HasIndex("ModuleId");
 
                     b.HasIndex("ParentId");
-
-                    b.HasIndex("TableId");
 
                     b.ToTable("DataAreas");
                 });
@@ -295,6 +292,12 @@ namespace wasp.WebApi.Migrations
 
             modelBuilder.Entity("wasp.WebApi.Data.Models.DataArea", b =>
                 {
+                    b.HasOne("wasp.WebApi.Data.Models.DataTable", "DataTable")
+                        .WithMany("DataAreas")
+                        .HasForeignKey("DataTableId")
+                        .OnDelete(DeleteBehavior.NoAction)
+                        .IsRequired();
+
                     b.HasOne("wasp.WebApi.Data.Models.Module", "Module")
                         .WithMany("DataAreas")
                         .HasForeignKey("ModuleId");
@@ -302,10 +305,6 @@ namespace wasp.WebApi.Migrations
                     b.HasOne("wasp.WebApi.Data.Models.DataArea", "Parent")
                         .WithMany("Children")
                         .HasForeignKey("ParentId");
-
-                    b.HasOne("wasp.WebApi.Data.Models.DataTable", "DataTable")
-                        .WithMany()
-                        .HasForeignKey("TableId");
 
                     b.Navigation("DataTable");
 
@@ -424,6 +423,8 @@ namespace wasp.WebApi.Migrations
 
             modelBuilder.Entity("wasp.WebApi.Data.Models.DataTable", b =>
                 {
+                    b.Navigation("DataAreas");
+
                     b.Navigation("DataItems");
                 });
 

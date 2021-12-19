@@ -39,6 +39,21 @@ namespace wasp.WebApi
         // This method gets called by the runtime. Use this method to add services to the container.
         public void ConfigureServices(IServiceCollection services)
         {
+            services.AddOptions();
+            services.AddMemoryCache();
+            services.AddCors(options =>
+            {
+                options.AddPolicy("cors",
+                    builder => builder
+                        .WithOrigins(
+                            "http://localhost:4200",
+                            "http://127.0.0.1:4200")
+                        .WithMethods("GET", "POST", "PUT", "DELETE", "OPTIONS")
+                        .AllowAnyHeader()
+                        .AllowCredentials()
+                );
+            });
+
             services.AddDbContext<ApplicationDbContext>(options =>
                 options.UseSqlServer(_configuration.GetConnectionString("WaspSqlServerConnectionString")));
             
@@ -76,6 +91,8 @@ namespace wasp.WebApi
             loggerFactory.AddSerilog();
             
             app.UseRouting();
+            app.UseCors("cors");
+
             app.UseAuthorization();
 
             app.UseEndpoints(endpoints =>

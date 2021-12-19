@@ -22,6 +22,7 @@ namespace wasp.WebApi.Data.Models
         public string SqlId { get; set; } = null!;
 
         public ICollection<DataItem> DataItems { get; set; } = new List<DataItem>();
+        public ICollection<DataArea> DataAreas { get; set; } = new List<DataArea>();
         
         [NotMapped]
         public string? Alias { get; set; }
