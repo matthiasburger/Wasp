@@ -3,7 +3,7 @@
     public class MtsDataField
     {
         public string Name { get; set; }
-        public object Value { get; set; }
+        public string Value { get; set; }
         public int Ordinal { get; set; }
 
         public MtsDataItemInfo? DataItemInfo { get; set; }

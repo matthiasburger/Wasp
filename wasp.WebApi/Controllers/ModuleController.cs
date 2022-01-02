@@ -3,20 +3,16 @@ using System.Collections.Generic;
 using System.Data;
 using System.Linq;
 using System.Threading.Tasks;
-
 using IronSphere.Extensions;
-
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Data.SqlClient;
 using Microsoft.EntityFrameworkCore;
-
+using Microsoft.Extensions.Configuration;
 using Newtonsoft.Json;
 using wasp.WebApi.Controllers.Base;
 using wasp.WebApi.Data;
 using wasp.WebApi.Data.Models;
 using wasp.WebApi.Data.Mts;
-
-using DataTable = wasp.WebApi.Data.Models.DataTable;
 
 namespace wasp.WebApi.Controllers
 {
@@ -25,12 +21,14 @@ namespace wasp.WebApi.Controllers
     public class ModuleController : ApiBaseController
     {
         private readonly ApplicationDbContext _dbContext;
-        
-        public ModuleController(ApplicationDbContext dbContext)
+        private readonly IConfiguration _configuration;
+
+        public ModuleController(ApplicationDbContext dbContext, IConfiguration configuration)
         {
             _dbContext = dbContext;
+            _configuration = configuration;
         }
-        
+
         [HttpGet("{id}")]
         public async Task<ActionResult> Open(string id)
         {
@@ -38,11 +36,11 @@ namespace wasp.WebApi.Controllers
                 .Include(x => x.DataAreas)
                 .ThenInclude(x => x.DataFields)
                 .ThenInclude(x => x.DataItem)
-                .SingleAsync(x=>x.Id == id);
-            
+                .SingleAsync(x => x.Id == id);
+
             return Ok(new { ok = true, called_at = DateTime.Now });
         }
-        
+
         [HttpGet("demo")]
         public async Task<ActionResult> OpenDemo()
         {
@@ -60,36 +58,55 @@ namespace wasp.WebApi.Controllers
                 .Include(x => x.DataAreas)
                 .ThenInclude(x => x.DataFields)
                 .ThenInclude(x => x.DataItem)
-                .SingleAsync(x=>x.Id == "000000");
-            
-            QueryBuilder? queryBuilder = module.DataAreas.First(x => x.Parent == null).As<IDataArea>()?.BuildQuery();
-            if (queryBuilder is null)
-                throw new Exception("could not build query :(");
-            
+                .SingleAsync(x => x.Id == "000000");
+
+            IList<MtsModule> moduleResults = new List<MtsModule>();
+            foreach (IDataArea dataArea in module.DataAreas.Where(w => w.Parent is null))
+            {
+                QueryBuilder? queryBuilder = dataArea.BuildQuery();
+                if (queryBuilder is null)
+                    throw new Exception("could not build query :(");
+
+                moduleResults.Add(await _getResultsFromQuery(queryBuilder, module));
+            }
+
+            return EnvelopeResult.Ok(moduleResults);
+        }
+
+        private async Task<MtsModule> _getResultsFromQuery(QueryBuilder queryBuilder, Module module)
+        {
             (string sql, IDictionary<string, object> parameters) = queryBuilder.GetQuery();
-            
-            await using SqlConnection connection = new (@"Server=(localdb)\mssqllocaldb;Database=wasp;Trusted_Connection=True;MultipleActiveResultSets=true");
+
+            await using SqlConnection connection =
+                new(_configuration.GetConnectionString("WaspSqlServerConnectionString"));
             await using SqlCommand cmd = new SqlCommand(sql, connection).SetParameters(parameters);
 
             connection.Open();
 
-            MtsModule mtsModule = new ();
+            MtsModule mtsModule = new();
             System.Data.DataTable dt = new();
-            using (SqlDataAdapter dataAdapter = new (cmd))
+            using (SqlDataAdapter dataAdapter = new(cmd))
             {
                 dataAdapter.Fill(dt);
             }
 
-            IEnumerable<DatabaseResult> result = dt.Rows.Cast<DataRow>().Select(x => new DatabaseResult(x)).ToList();
+            IEnumerable<DatabaseResult>
+                result = dt.Rows.Cast<DataRow>().Select(x => new DatabaseResult(x)).ToList();
 
-            foreach (DataArea moduleDataArea in module.DataAreas.Where(w=>w.Parent is null))
+            foreach (DataArea moduleDataArea in module.DataAreas.Where(w => w.Parent is null))
             {
                 mtsModule.DataAreas.Add(_buildDataArea(moduleDataArea, result));
             }
-            
+
             string _ = JsonConvert.SerializeObject(mtsModule);
 
-            return EnvelopeResult.Ok(mtsModule);
+            return mtsModule;
+        }
+
+        [Obsolete("the grouping needs to get a refactoring")]
+        private static IEnumerable<IGrouping<object, DatabaseResult>> _getGrouping(IEnumerable<DatabaseResult> result, int[] ordinals)
+        {
+            return result.GroupBy(x => x.GetGrouping(ordinals));
         }
 
         private static MtsDataArea _buildDataArea(IDataArea moduleDataArea, IEnumerable<DatabaseResult> result)
@@ -98,33 +115,32 @@ namespace wasp.WebApi.Controllers
             {
                 DataAreaInfo = moduleDataArea.GetDataAreaInfo()
             };
-            
-            int[] ordinals = moduleDataArea.DataFields.Select(x => x.Ordinal).ToArray();
-            IEnumerable<IGrouping<object, DatabaseResult>> gr = result.GroupBy(x => x.GetGrouping(ordinals));
 
-            foreach (IGrouping<object,DatabaseResult> grouping in gr)
+            int[] ordinals = moduleDataArea.DataFields.Select(x => x.Ordinal).ToArray();
+            IEnumerable<IGrouping<object, DatabaseResult>> gr = _getGrouping(result, ordinals);
+
+            foreach (IGrouping<object, DatabaseResult> grouping in gr)
             {
                 IEnumerable<DatabaseResult> nextResult = grouping;
                 DatabaseResult key = grouping.First();
 
-                MtsRecord mtsRecord = new ();
-                
-                dataArea.Records.Add(mtsRecord);
-
+                MtsRecord mtsRecord = new();
+                mtsRecord.DataTableId = moduleDataArea.DataTable.Id;
                 foreach (DataArea subArea in moduleDataArea.Children)
                 {
                     mtsRecord.DataAreas.Add(_buildDataArea(subArea, nextResult));
                 }
-                
+
                 foreach (DataField dfs in moduleDataArea.DataFields)
                 {
-                    int ordinal = dfs.Ordinal;
                     DataItem? item = dfs.DataItem;
-                    MtsDataField field = key.GetDataField(ordinal);
+                    MtsDataField field = key.GetDataField(dfs.Ordinal);
                     field.DataItemInfo = item?.GetDataItemInfo();
                     field.Name = item?.Id ?? "<DataItem not found>";
                     mtsRecord.DataFields.Add(field);
                 }
+                dataArea.Records.Add(mtsRecord);
+
             }
 
             return dataArea;
@@ -134,14 +150,14 @@ namespace wasp.WebApi.Controllers
         [HttpPost]
         public async Task<IActionResult> Create()
         {
-            Module module = new ()
+            Module module = new()
             {
                 Name = "Test-Module"
             };
 
             await _dbContext.AddAsync(module);
             await _dbContext.SaveChangesAsync();
-            
+
             return Ok(new { ok = true, called_at = DateTime.Now });
         }
     }
@@ -160,7 +176,7 @@ namespace wasp.WebApi.Controllers
             {
                 dataFields[columnIndex] = new MtsDataField
                 {
-                    Value = dataRow[columnIndex],
+                    Value = dataRow[columnIndex].ToString() ?? string.Empty,
                     Ordinal = columnIndex
                 };
             }
@@ -169,40 +185,42 @@ namespace wasp.WebApi.Controllers
         }
 
         private int[]? _ordinals;
-        
+
         public object GetGrouping(int[] ordinals)
         {
             _ordinals = ordinals;
-            
-            return T();
+            return _group();
         }
 
-        public string T()
+        private string _group()
         {
-            return _ordinals is not null 
-                ? string.Join("-", _dataFields.Where(w => _ordinals.Contains(w.Ordinal)).OrderBy(x => x.Ordinal).Select(s => s.Value))
-                : string.Empty;
+            if (_ordinals is null)
+                return string.Empty;
 
+            IEnumerable<object> x = _dataFields
+                .Where(w => _ordinals.Contains(w.Ordinal))
+                .OrderBy(x => x.Ordinal)
+                .Select(s => s.Value);
+
+            return string.Join("-", x);
         }
 
         public MtsDataField GetDataField(int ordinal)
-        {
-            return _dataFields.First(x => x.Ordinal == ordinal);
-        }
-        
+            => _dataFields.First(x => x.Ordinal == ordinal);
+
         public bool Equals(DatabaseResult? x, DatabaseResult? y)
         {
             if (ReferenceEquals(x, y)) return true;
             if (ReferenceEquals(x, null)) return false;
             if (ReferenceEquals(y, null)) return false;
-            
-            return x.GetType() == y.GetType() 
-                   && x.T().Equals(y.T());
+
+            return x.GetType() == y.GetType()
+                   && x._group().Equals(y._group());
         }
 
         public int GetHashCode(DatabaseResult obj)
         {
-            return obj.T().GetHashCode();
+            return obj._group().GetHashCode();
         }
     }
 }

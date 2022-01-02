@@ -9,5 +9,7 @@ namespace wasp.WebApi.Data.Mts
         [JsonProperty("data-fields")] public List<MtsDataField> DataFields { get; set; } = new List<MtsDataField>();
 
         [JsonProperty("data-areas")] public List<MtsDataArea> DataAreas { get; set; } = new List<MtsDataArea>();
+
+        public string? DataTableId { get; set; }
     }
 }

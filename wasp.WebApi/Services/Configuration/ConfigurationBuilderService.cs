@@ -5,7 +5,7 @@ using Microsoft.Extensions.Configuration;
 
 namespace wasp.WebApi.Services.Configuration
 {
-    public class ConfigurationService : IConfigurationService
+    public class ConfigurationBuilderService : IConfigurationBuilderService
     {
         public IConfiguration GetPlatformAgnosticConfig(string[]? cliArgs = null)
         {

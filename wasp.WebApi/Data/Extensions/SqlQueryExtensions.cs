@@ -13,14 +13,12 @@ namespace wasp.WebApi.Data.Extensions
     {
         public static async Task<IList<T>> SqlQuery<T>(this DbContext db, string sql, params object[] parameters) where T : class
         {
-            await using (ContextForQueryType<T> db2 = new(db.Database.GetDbConnection()))
-            {
-                // share the current database transaction, if one exists
-                IDbContextTransaction? transaction = db.Database.CurrentTransaction;
-                if (transaction != null)
-                    await db2.Database.UseTransactionAsync(transaction.GetDbTransaction());
-                return await db2.Set<T>().FromSqlRaw(sql, parameters).ToListAsync();
-            }
+            await using ContextForQueryType<T> db2 = new(db.Database.GetDbConnection());
+
+            IDbContextTransaction? transaction = db.Database.CurrentTransaction;
+            if (transaction != null)
+                await db2.Database.UseTransactionAsync(transaction.GetDbTransaction());
+            return await db2.Set<T>().FromSqlRaw(sql, parameters).ToListAsync();
         }
 
         public static async Task<IList<T>> SqlQuery<T>(this DbContext db, Func<T> anonType, string sql, params object[] parameters) where T : class

@@ -2,7 +2,7 @@
 
 namespace wasp.WebApi.Services.Configuration
 {
-    public interface IConfigurationService
+    public interface IConfigurationBuilderService
     {
         IConfiguration GetPlatformAgnosticConfig(string[]? cliArgs = null);
     }

@@ -14,7 +14,7 @@ namespace wasp.WebApi.Data
     {
         public ApplicationDbContext CreateDbContext(string[] args)
         {
-            IConfigurationService configurationService = new ConfigurationService();
+            IConfigurationBuilderService configurationService = new ConfigurationBuilderService();
             IConfiguration configuration = configurationService.GetPlatformAgnosticConfig();
 
             DbContextOptionsBuilder<ApplicationDbContext> optionsBuilder = new();

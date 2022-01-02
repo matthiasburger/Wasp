@@ -14,7 +14,7 @@ namespace wasp.WebApi
     public class Program
     {
         private static readonly IEnvironmentDiscovery EnvironmentDiscovery = new EnvironmentDiscovery();
-        private static readonly IConfigurationService ConfigurationService = new ConfigurationService();
+        private static readonly IConfigurationBuilderService ConfigurationService = new ConfigurationBuilderService();
         
         public static int Main(string[] args)
         {
