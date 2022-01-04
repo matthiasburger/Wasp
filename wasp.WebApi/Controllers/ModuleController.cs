@@ -32,18 +32,6 @@ namespace wasp.WebApi.Controllers
         [HttpGet("{id}")]
         public async Task<ActionResult> Open(string id)
         {
-            Module _ = await _dbContext.Modules
-                .Include(x => x.DataAreas)
-                .ThenInclude(x => x.DataFields)
-                .ThenInclude(x => x.DataItem)
-                .SingleAsync(x => x.Id == id);
-
-            return Ok(new { ok = true, called_at = DateTime.Now });
-        }
-
-        [HttpGet("demo")]
-        public async Task<ActionResult> OpenDemo()
-        {
             Module module = await _dbContext.Modules
                 .Include(x => x.DataAreas)
                 .ThenInclude(x => x.DataAreaReferences)
@@ -58,7 +46,9 @@ namespace wasp.WebApi.Controllers
                 .Include(x => x.DataAreas)
                 .ThenInclude(x => x.DataFields)
                 .ThenInclude(x => x.DataItem)
-                .SingleAsync(x => x.Id == "000000");
+                .ThenInclude(x => x.KeyRelations)
+                .ThenInclude(x => x.Index)
+                .SingleAsync(x => x.Id == id);
 
             IList<MtsModule> moduleResults = new List<MtsModule>();
             foreach (IDataArea dataArea in module.DataAreas.Where(w => w.Parent is null))
@@ -131,13 +121,27 @@ namespace wasp.WebApi.Controllers
                     mtsRecord.DataAreas.Add(_buildDataArea(subArea, nextResult));
                 }
 
+                bool noRow = false;
                 foreach (DataField dfs in moduleDataArea.DataFields)
                 {
                     DataItem? item = dfs.DataItem;
                     MtsDataField field = key.GetDataField(dfs.Ordinal);
+
+                    if (field.Value == null && item.KeyRelations.Any(y => y.Index.Type == IndexType.PrimaryKey))
+                    {
+                        noRow = true;
+                        break;
+                    }
+                    
                     field.DataItemInfo = item?.GetDataItemInfo();
                     field.Name = item?.Id ?? "<DataItem not found>";
+                    
                     mtsRecord.DataFields.Add(field);
+                }
+
+                if (noRow)
+                {
+                    mtsRecord.DataFields.Clear();
                 }
                 dataArea.Records.Add(mtsRecord);
 
@@ -174,9 +178,11 @@ namespace wasp.WebApi.Controllers
 
             for (int columnIndex = 0; columnIndex < columnLength; columnIndex++)
             {
+                object value = dataRow[columnIndex];
+                
                 dataFields[columnIndex] = new MtsDataField
                 {
-                    Value = dataRow[columnIndex].ToString() ?? string.Empty,
+                    Value = value == DBNull.Value ? null : value.ToString(),
                     Ordinal = columnIndex
                 };
             }
@@ -197,7 +203,7 @@ namespace wasp.WebApi.Controllers
             if (_ordinals is null)
                 return string.Empty;
 
-            IEnumerable<object> x = _dataFields
+            IEnumerable<string?> x = _dataFields
                 .Where(w => _ordinals.Contains(w.Ordinal))
                 .OrderBy(x => x.Ordinal)
                 .Select(s => s.Value);

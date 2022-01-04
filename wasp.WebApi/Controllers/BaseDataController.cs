@@ -189,7 +189,8 @@ FROM INFORMATION_SCHEMA.COLUMNS
             {
                 Id = x.ColumnName,
                 Name = x.ColumnName,
-                DataTableId = x.TableName
+                DataTableId = x.TableName,
+                Required = x.IsNullable
             });
             await _context.DataItems.AddRangeAsync(dataItems);
             await _context.SaveChangesAsync();

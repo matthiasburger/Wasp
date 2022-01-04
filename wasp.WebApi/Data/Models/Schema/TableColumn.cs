@@ -19,6 +19,9 @@ namespace wasp.WebApi.Data.Models.Schema
         [Column("COLUMN_NAME")]
         public string ColumnName { get; set; } = null!;
         
+        [Column("IS_NULLABLE")]
+        public bool IsNullable { get; set; }
+        
         /*
         [Column("ORDINAL_POSITION")]
         public int OrdinalPosition { get; set; }
@@ -26,8 +29,6 @@ namespace wasp.WebApi.Data.Models.Schema
         [Column("COLUMN_DEFAULT")]
         public string? ColumnDefault { get; set; }
         
-        [Column("IS_NULLABLE")]
-        public bool IsNullable { get; set; }
 
         [Column("DATA_TYPE")] 
         public string DataType { get; set; } = null!;

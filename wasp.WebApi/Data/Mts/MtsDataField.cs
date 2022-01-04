@@ -1,9 +1,12 @@
-﻿namespace wasp.WebApi.Data.Mts
+﻿using System;
+
+namespace wasp.WebApi.Data.Mts
 {
     public class MtsDataField
     {
         public string Name { get; set; }
-        public string Value { get; set; }
+        [Obsolete("Should be object?")]
+        public string? Value { get; set; }
         public int Ordinal { get; set; }
 
         public MtsDataItemInfo? DataItemInfo { get; set; }
@@ -15,5 +18,6 @@
         public string DataTableId { get; set; } = null!;
         public string Name { get; set; } = null!;
         public string? PythonId { get; set; }
+        public bool Required { get; set; }
     }
 }

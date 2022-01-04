@@ -26,6 +26,9 @@ namespace wasp.WebApi.Data.Models
 
         [Column("PythonId", Order = 3, TypeName = "nvarchar(100)")]
         public string? PythonId { get; set; }
+        
+        [Column("Required", Order=4, TypeName="bit")]
+        public bool Required { get; set; }
 
 
         [ForeignKey("DataTableId")] 
@@ -47,7 +50,8 @@ namespace wasp.WebApi.Data.Models
                 Id = Id,
                 DataTableId = DataTableId,
                 Name = Name,
-                PythonId = PythonId
+                PythonId = PythonId,
+                Required = Required
             };
         }
     }
