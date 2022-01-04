@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
 using System.Diagnostics.CodeAnalysis;
@@ -24,7 +25,7 @@ namespace wasp.WebApi.Data.Models
         public ICollection<DataItem> DataItems { get; set; } = new List<DataItem>();
         public ICollection<DataArea> DataAreas { get; set; } = new List<DataArea>();
         
-        [NotMapped]
+        [NotMapped, Obsolete("Use AreaAlias")]
         public string? Alias { get; set; }
 
         

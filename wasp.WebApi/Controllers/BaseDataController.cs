@@ -3,6 +3,8 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 
+using IronSphere.Extensions;
+
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using wasp.WebApi.Data;
@@ -181,7 +183,7 @@ FROM
         private async Task _createColumnData()
         {
             IEnumerable<TableColumn> columns = await _context.SqlQuery<TableColumn>(@"
-SELECT COLUMN_NAME, TABLE_NAME
+SELECT COLUMN_NAME, TABLE_NAME, IS_NULLABLE
 FROM INFORMATION_SCHEMA.COLUMNS
 ");
 
@@ -190,7 +192,7 @@ FROM INFORMATION_SCHEMA.COLUMNS
                 Id = x.ColumnName,
                 Name = x.ColumnName,
                 DataTableId = x.TableName,
-                Required = x.IsNullable
+                Required = x.IsNullable.ToBool(y => y is "NO")
             });
             await _context.DataItems.AddRangeAsync(dataItems);
             await _context.SaveChangesAsync();
