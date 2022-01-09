@@ -33,5 +33,10 @@ namespace wasp.WebApi.Data.Models
         
         [NotMapped]
         public int Ordinal { get; set; }
+
+        public string GetSqlId(IDataArea? replaced = null)
+        {
+            return $"{(replaced ?? DataArea).Alias}.{DataItem.Id}";
+        }
     }
 }

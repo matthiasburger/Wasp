@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
 using System.Linq;
+using System.Security.Cryptography.Xml;
 
 using IronSphere.Extensions;
 
@@ -15,6 +16,7 @@ using wasp.WebApi.Data.SurrogateKeyGenerator;
 
 namespace wasp.WebApi.Data.Models
 {
+    
     public class DataArea : SurrogateBaseEntity<string, DefaultSurrogateKeyGenerator>, IRecursiveEntity<DataArea, string>, IDataArea
     {
         [System.ComponentModel.DataAnnotations.Key]
@@ -47,6 +49,7 @@ namespace wasp.WebApi.Data.Models
         public bool Append { get; set; }
         
         public ICollection<DataArea> Children { get; set; } = new List<DataArea>();
+
         public MtsDataAreaInfo GetDataAreaInfo()
         {
             return new MtsDataAreaInfo
@@ -58,7 +61,15 @@ namespace wasp.WebApi.Data.Models
             };
         }
 
+        public string GetSqlId()
+        {
+            return Alias.IsNullOrWhiteSpace() ? DataTable.Name : $"{DataTable.Name} as {Alias}";
+        }
+
         public ICollection<DataAreaReference> DataAreaReferences { get; set; } = new List<DataAreaReference>();
+        
+        [NotMapped]
+        public string Alias { get; set; }
     }
     
     public interface IDataArea
@@ -71,10 +82,13 @@ namespace wasp.WebApi.Data.Models
         ICollection<DataField> DataFields { get; }
 
         ICollection<DataArea> Children { get; }
+        string Name { get; set; }
+        string Alias { get; set; }
+
 
         public QueryBuilder BuildQuery()
         {
-            QueryBuilder queryBuilder = new (DataTable);
+            QueryBuilder queryBuilder = new (this);
             foreach (DataArea area in Children)
             {
                 queryBuilder.Join(area);
@@ -85,8 +99,8 @@ namespace wasp.WebApi.Data.Models
         }
 
         MtsDataAreaInfo GetDataAreaInfo();
-        
         public bool Append { get; set; }
+        string GetSqlId();
     }
     
     public class QueryBuilder
@@ -97,12 +111,11 @@ namespace wasp.WebApi.Data.Models
 
         private readonly HashSet<string> _usedTableAliases = new ();
         private int ordinal = 0;
-
-        public QueryBuilder(DataTable dataTable)
+        
+        public QueryBuilder(IDataArea dataArea)
         {
-            _setTableAlias(dataTable);
-            
-            _query = new Query(dataTable.GetSqlId());
+            _setAreaAlias(dataArea);
+            _query = new Query(dataArea.GetSqlId());
         }
 
         public QueryResult GetQuery()
@@ -112,19 +125,19 @@ namespace wasp.WebApi.Data.Models
             return new QueryResult(result.Sql, result.NamedBindings);
         }
         
-        private void _setTableAlias(DataTable dataTable)
+        private void _setAreaAlias(IDataArea dataArea)
         {
-            if (dataTable is null)
-                throw new ArgumentNullException(nameof(dataTable));
+            if (dataArea is null)
+                throw new ArgumentNullException(nameof(dataArea));
             
-            string alias = dataTable.SqlId.CamelCase()!;
+            string alias = dataArea.DataTable.SqlId.CamelCase();
 
             int count = 0;
             string newAlias = alias;
             while (_usedTableAliases.Contains(newAlias))
                 newAlias = $"{alias}_{++count}";
 
-            dataTable.Alias = newAlias;
+            dataArea.Alias = newAlias;
             _usedTableAliases.Add(newAlias);
         }
 
@@ -138,25 +151,33 @@ namespace wasp.WebApi.Data.Models
             foreach (DataField dataField in dataArea.DataFields)
             {
                 _setOrdinal(dataField);
-                _query.Select(dataField.DataItem.GetSqlId());
+                _query.Select(dataField.GetSqlId());
             }
 
             foreach (DataField dataField in dataArea.DataFields)
             {
                 if (!string.IsNullOrWhiteSpace(dataField.FilterFrom))
-                    _query.Where(dataField.DataItem.GetSqlId(), ">=", dataField.FilterFrom);
+                    _query.Where(dataField.GetSqlId(), ">=", dataField.FilterFrom);
             }
         }
 
         public void Join(IDataArea subArea)
         {
-            _setTableAlias(subArea.DataTable);
-
-            _query.Join(subArea.DataTable.GetSqlId(), join =>
+            _setAreaAlias(subArea);
+            
+            _query.Join(subArea.GetSqlId(), join =>
             {
                 Join result = @join;
-                foreach (DataAreaReference reference in subArea.DataAreaReferences) 
-                    result = result.On(reference.ReferenceDataItem.GetSqlId(), reference.KeyDataItem.GetSqlId());
+                foreach (DataAreaReference reference in subArea.DataAreaReferences)
+                {
+                    DataArea area = reference.DataArea;
+                    DataArea parent = area.Parent!;
+
+                    string referenceDataItemId = parent.DataFields.First(w => w.DataItemId == reference.ReferenceDataItemId && w.DataTableId == reference.ReferenceDataTableId).GetSqlId(area);
+                    string keyDataItemId = area.DataFields.First(w => w.DataItemId == reference.KeyDataItemId && w.DataTableId == reference.KeyDataItemDataTableId).GetSqlId(parent);
+                    
+                    result = result.On(referenceDataItemId, keyDataItemId);
+                }
                 return result;
             },"left join");
             
