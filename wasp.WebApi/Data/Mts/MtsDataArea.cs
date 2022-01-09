@@ -7,8 +7,11 @@ namespace wasp.WebApi.Data.Mts
     public class MtsDataArea
     {
         [JsonProperty("records")] 
-        public List<MtsRecord> Records { get; set; } = new List<MtsRecord>();
-
+        public List<MtsRecord> Records { get; set; } = new();
+        
+        [JsonProperty("append")] 
+        public bool Append { get; set; }
+        
         public MtsDataAreaInfo DataAreaInfo { get; set; }
     }
 

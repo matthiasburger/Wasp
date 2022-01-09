@@ -103,7 +103,8 @@ namespace wasp.WebApi.Controllers
         {
             MtsDataArea dataArea = new()
             {
-                DataAreaInfo = moduleDataArea.GetDataAreaInfo()
+                DataAreaInfo = moduleDataArea.GetDataAreaInfo(),
+                Append = moduleDataArea.Append
             };
 
             int[] ordinals = moduleDataArea.DataFields.Select(x => x.Ordinal).ToArray();

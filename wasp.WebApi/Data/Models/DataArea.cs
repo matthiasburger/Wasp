@@ -44,6 +44,8 @@ namespace wasp.WebApi.Data.Models
         
         public ICollection<DataField> DataFields { get; set; } = new List<DataField>();
         
+        public bool Append { get; set; }
+        
         public ICollection<DataArea> Children { get; set; } = new List<DataArea>();
         public MtsDataAreaInfo GetDataAreaInfo()
         {
@@ -83,6 +85,8 @@ namespace wasp.WebApi.Data.Models
         }
 
         MtsDataAreaInfo GetDataAreaInfo();
+        
+        public bool Append { get; set; }
     }
     
     public class QueryBuilder
