@@ -88,13 +88,14 @@ namespace wasp.WebApi.Controllers
                 mtsModule.DataAreas.Add(_buildDataArea(moduleDataArea, result));
             }
 
-            string _ = JsonConvert.SerializeObject(mtsModule);
+            string resultJson = JsonConvert.SerializeObject(mtsModule);
 
             return mtsModule;
         }
 
         [Obsolete("the grouping needs to get a refactoring")]
-        private static IEnumerable<IGrouping<object, DatabaseResult>> _getGrouping(IEnumerable<DatabaseResult> result, int[] ordinals)
+        private static IEnumerable<IGrouping<object, DatabaseResult>> _getGrouping(IEnumerable<DatabaseResult> result,
+            int[] ordinals)
         {
             return result.GroupBy(x => x.GetGrouping(ordinals));
         }
@@ -119,7 +120,48 @@ namespace wasp.WebApi.Controllers
                 mtsRecord.DataTableId = moduleDataArea.DataTable.Id;
                 foreach (DataArea subArea in moduleDataArea.Children)
                 {
-                    mtsRecord.DataAreas.Add(_buildDataArea(subArea, nextResult));
+                    IEnumerable<DataAreaReference> recursiveRelations = subArea.DataAreaReferences.Where(x =>
+                        x.ReferenceDataTableId == x.KeyDataItemDataTableId
+                    );
+
+                    MtsDataArea area = _buildDataArea(subArea, nextResult);
+
+                    if (recursiveRelations.Any())
+                    {
+                        DataAreaReference relation = recursiveRelations.First();
+
+                        foreach (MtsRecord record in area.Records)
+                        {
+                            IEnumerable<MtsDataField> values = record.DataFields.Where(w =>
+                                w.DataItemInfo.Id == relation.KeyDataItemId &&
+                                w.DataItemInfo.DataTableId == relation.KeyDataItemDataTableId);
+
+                            if (values.IsNullOrEmpty())
+                            {
+                                continue;
+                                
+                            }
+                            if (!values.IsSingle())
+                                throw new Exception($"Too many records found {values.Count()}");
+
+                            string? value = values.First().Value;
+                            if (value is null)
+                            {
+                                // is root!!
+                                mtsRecord.DataAreas.Add(area);
+                            }
+                            else
+                            {
+                                MtsRecord foundParentRecord =
+                                    _findDataArea(dataArea, relation.ReferenceDataItem, value);
+                                (foundParentRecord ?? mtsRecord).DataAreas.Add(area);
+                            }
+                        }
+                    }
+                    else
+                    {
+                        mtsRecord.DataAreas.Add(area);
+                    }
                 }
 
                 bool noRow = false;
@@ -133,10 +175,10 @@ namespace wasp.WebApi.Controllers
                         noRow = true;
                         break;
                     }
-                    
+
                     field.DataItemInfo = item?.GetDataItemInfo();
                     field.Name = item?.Id ?? "<DataItem not found>";
-                    
+
                     mtsRecord.DataFields.Add(field);
                 }
 
@@ -144,11 +186,43 @@ namespace wasp.WebApi.Controllers
                 {
                     mtsRecord.DataFields.Clear();
                 }
-                dataArea.Records.Add(mtsRecord);
 
+                dataArea.Records.Add(mtsRecord);
             }
 
             return dataArea;
+        }
+
+        private static MtsRecord? _findDataArea(MtsDataArea mtsDataArea, DataItem dataItem, string value)
+        {
+            foreach (MtsRecord record in mtsDataArea.Records)
+            {
+                MtsDataField? matchingDataField = record.DataFields.FirstOrDefault(w =>
+                    w.DataItemInfo.Id == dataItem.Id && w.DataItemInfo.DataTableId == dataItem.DataTableId);
+
+                if (matchingDataField is null)
+                    continue;
+
+                if (matchingDataField.Value == value)
+                    return record;
+
+                foreach (MtsDataArea recordDataArea in record.DataAreas)
+                {
+                    MtsRecord? rec = _findDataArea(recordDataArea, dataItem, value);
+                    if (rec != null)
+                        return rec;
+                }
+            }
+
+            return null;
+        }
+
+        private static MtsDataArea _buildRecursiveDataArea(DataArea subArea, IEnumerable<DatabaseResult> nextResult,
+            ICollection<DataAreaReference> subAreaDataAreaReferences)
+        {
+            MtsDataArea area = _buildDataArea(subArea, nextResult);
+
+            return area;
         }
 
 
@@ -180,7 +254,7 @@ namespace wasp.WebApi.Controllers
             for (int columnIndex = 0; columnIndex < columnLength; columnIndex++)
             {
                 object value = dataRow[columnIndex];
-                
+
                 dataFields[columnIndex] = new MtsDataField
                 {
                     Value = value == DBNull.Value ? null : value.ToString(),

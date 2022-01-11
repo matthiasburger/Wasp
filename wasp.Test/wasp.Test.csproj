@@ -28,6 +28,11 @@
     <ItemGroup>
       <ProjectReference Include="..\..\IronSphere.Extensions\IronSphere.Extensions\IronSphere.Extensions.csproj" />
       <ProjectReference Include="..\wasp.Core\wasp.Core.csproj" />
+      <ProjectReference Include="..\wasp.WebApi\wasp.WebApi.csproj" />
+    </ItemGroup>
+
+    <ItemGroup>
+      <Folder Include="WebApi\Data\Dto" />
     </ItemGroup>
 
 </Project>

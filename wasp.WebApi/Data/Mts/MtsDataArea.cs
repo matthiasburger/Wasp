@@ -1,6 +1,7 @@
 ﻿using System.Collections.Generic;
 
 using Newtonsoft.Json;
+using wasp.WebApi.Data.Models;
 
 namespace wasp.WebApi.Data.Mts
 {
@@ -13,6 +14,12 @@ namespace wasp.WebApi.Data.Mts
         public bool Append { get; set; }
         
         public MtsDataAreaInfo DataAreaInfo { get; set; }
+        
+        
+        public override string ToString()
+        {
+            return $"MtsDataArea <{DataAreaInfo}>";
+        }
     }
 
     public class MtsDataAreaInfo
@@ -21,5 +28,10 @@ namespace wasp.WebApi.Data.Mts
         public string? Name { get; set; }
         public string DataTableId { get; set; }
         public string? ModuleId { get; set; }
+
+        public override string ToString()
+        {
+            return $"MtsDataAreaInfo <{Id}:{Name}> on DataTable {DataTableId} for Module {ModuleId}";
+        }
     }
 }

@@ -70,6 +70,11 @@ namespace wasp.WebApi.Data.Models
         
         [NotMapped]
         public string Alias { get; set; }
+
+        public override string ToString()
+        {
+            return $"DataArea <{Id}:{Name}> @ <{DataTable}:{Alias}>";
+        }
     }
     
     public interface IDataArea
@@ -173,8 +178,16 @@ namespace wasp.WebApi.Data.Models
                     DataArea area = reference.DataArea;
                     DataArea parent = area.Parent!;
 
-                    string referenceDataItemId = parent.DataFields.First(w => w.DataItemId == reference.ReferenceDataItemId && w.DataTableId == reference.ReferenceDataTableId).GetSqlId(area);
-                    string keyDataItemId = area.DataFields.First(w => w.DataItemId == reference.KeyDataItemId && w.DataTableId == reference.KeyDataItemDataTableId).GetSqlId(parent);
+                    DataField dfParent = parent.DataFields.First(w =>
+                        w.DataItemId == reference.ReferenceDataItemId &&
+                        w.DataTableId == reference.ReferenceDataTableId);
+
+                    DataField actualDf = area.DataFields.First(w =>
+                        w.DataItemId == reference.KeyDataItemId && 
+                        w.DataTableId == reference.KeyDataItemDataTableId);
+
+                    string referenceDataItemId = dfParent.GetSqlId();
+                    string keyDataItemId = actualDf.GetSqlId();
                     
                     result = result.On(referenceDataItemId, keyDataItemId);
                 }

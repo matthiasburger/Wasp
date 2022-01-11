@@ -28,13 +28,10 @@ namespace wasp.WebApi.Data.Models
         [NotMapped, Obsolete("Use AreaAlias")]
         public string? Alias { get; set; }
 
-        
-        public string GetSqlId()
+
+        public override string ToString()
         {
-            if (Alias is null)
-                return SqlId;
-            
-            return $"{SqlId} as {Alias}";
+            return $"DataTable <{Id}:{Name}>";
         }
     }
 }
