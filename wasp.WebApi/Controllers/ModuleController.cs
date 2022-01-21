@@ -152,7 +152,7 @@ namespace wasp.WebApi.Controllers
                             }
                             else
                             {
-                                MtsRecord foundParentRecord =
+                                MtsRecord? foundParentRecord =
                                     _findDataArea(dataArea, relation.ReferenceDataItem, value);
                                 (foundParentRecord ?? mtsRecord).DataAreas.Add(area);
                             }
@@ -216,15 +216,6 @@ namespace wasp.WebApi.Controllers
 
             return null;
         }
-
-        private static MtsDataArea _buildRecursiveDataArea(DataArea subArea, IEnumerable<DatabaseResult> nextResult,
-            ICollection<DataAreaReference> subAreaDataAreaReferences)
-        {
-            MtsDataArea area = _buildDataArea(subArea, nextResult);
-
-            return area;
-        }
-
 
         [HttpPost]
         public async Task<IActionResult> Create()
