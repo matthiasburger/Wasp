@@ -115,7 +115,7 @@ namespace wasp.WebApi.Data.Models
         private readonly Query _query;
 
         private readonly HashSet<string> _usedTableAliases = new ();
-        private int ordinal = 0;
+        private int ordinal;
         
         public QueryBuilder(IDataArea dataArea)
         {

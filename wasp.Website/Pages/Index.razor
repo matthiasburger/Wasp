@@ -1,0 +1,44 @@
+﻿@page "/"
+
+<PageTitle>Wasp Software</PageTitle>
+
+<h1>Hello, world!</h1>
+
+Welcome to your new app.
+
+<SurveyPrompt Title="How is Blazor working for you?"/>
+
+
+<!-- NoteListingComponent.razor -->
+<div class="col-6">
+    <h2>Enter your note</h2>
+    <fieldset>
+        <input @bind="CurrentGuid"/>
+        <label for="Comment">
+            <textarea id="Comment" cols="50" rows="6" @bind="NewComment" @bind:event="onchange"></textarea>
+        </label>
+    </fieldset>
+    <button type="submit" @onclick="@OnSubmitNote">Submit</button>
+</div>
+<div class="col-6">
+
+    <h2>Your saved notes</h2>
+    @if (Notes.Any())
+    {
+        <ul>
+            @foreach (Note note in Notes)
+            {
+                <NoteViewComponent
+                    Note="@note"
+                    OnEditNote="@(e => OnEditNote(e, note))"
+                    OnDeleteNote="@(e => OnDeleteNote(e, note))">
+                    
+                </NoteViewComponent>
+            }
+        </ul>
+    }
+    else
+    {
+        <p>You currently do not have any saved notes.</p>
+    }
+</div>

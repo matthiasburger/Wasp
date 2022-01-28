@@ -1,0 +1,9 @@
+@if (Note != null)
+{
+    <li>
+        <span>@Note.Message</span>
+        <span>Created: @Note.Created.ToUniversalTime().ToString("ddd d MMM yyyy HH:mm:ss")</span>
+        <button type="submit" @onclick="@OnDeleteNote">Delete</button>
+        <button type="submit" @onclick="@OnEditNote">Edit</button>
+    </li>
+}

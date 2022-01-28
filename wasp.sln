@@ -15,6 +15,8 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "wasp.TestRun", "wasp.TestRu
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "IronSphere.Extensions", "..\IronSphere.Extensions\IronSphere.Extensions\IronSphere.Extensions.csproj", "{7AA1F036-1F95-4ECE-8043-27C26208EC27}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "wasp.Website", "wasp.Website\wasp.Website.csproj", "{C67834FF-A20F-41D2-B702-BB6D87D807A5}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -45,6 +47,10 @@ Global
 		{7AA1F036-1F95-4ECE-8043-27C26208EC27}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{7AA1F036-1F95-4ECE-8043-27C26208EC27}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{7AA1F036-1F95-4ECE-8043-27C26208EC27}.Release|Any CPU.Build.0 = Release|Any CPU
+		{C67834FF-A20F-41D2-B702-BB6D87D807A5}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{C67834FF-A20F-41D2-B702-BB6D87D807A5}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{C67834FF-A20F-41D2-B702-BB6D87D807A5}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{C67834FF-A20F-41D2-B702-BB6D87D807A5}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
