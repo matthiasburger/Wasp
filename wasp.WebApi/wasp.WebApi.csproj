@@ -5,6 +5,7 @@
     <NoWin32Manifest>true</NoWin32Manifest>
     <LangVersion>10</LangVersion>
     <Nullable>enable</Nullable>
+    <DockerDefaultTargetOS>Windows</DockerDefaultTargetOS>
   </PropertyGroup>
 
   <ItemGroup>
@@ -45,7 +46,6 @@
 
   <ItemGroup>
     <ProjectReference Include="..\..\IronSphere.Extensions\IronSphere.Extensions\IronSphere.Extensions.csproj" />
-    <ProjectReference Include="..\pythonnet-master\src\runtime\Python.Runtime.csproj" />
     <ProjectReference Include="..\wasp.Core\wasp.Core.csproj" />
   </ItemGroup>
 

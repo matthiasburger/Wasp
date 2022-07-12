@@ -8,16 +8,13 @@
 
     <ItemGroup>
       <ProjectReference Include="..\..\IronSphere.Extensions\IronSphere.Extensions\IronSphere.Extensions.csproj" />
-      <ProjectReference Include="..\pythonnet-master\src\runtime\Python.Runtime.csproj" />
+      <ProjectReference Include="..\..\pythonnet\src\runtime\Python.Runtime.csproj" />
     </ItemGroup>
 
     <ItemGroup>
       <PackageReference Include="JetBrains.Annotations" Version="2021.3.0" />
       <PackageReference Include="SqlKata" Version="2.3.7" />
-    </ItemGroup>
-
-    <ItemGroup>
-      <Folder Include="Extensions" />
+      <PackageReference Include="System.Management" Version="4.7.0" />
     </ItemGroup>
 
 </Project>

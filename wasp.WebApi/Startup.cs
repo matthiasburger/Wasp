@@ -19,6 +19,7 @@ using wasp.WebApi.Exceptions;
 using wasp.WebApi.Services.Configuration;
 using wasp.WebApi.Services.DatabaseAccess;
 using wasp.WebApi.Services.DataDefinition;
+using wasp.WebApi.Services.Environment;
 using wasp.WebApi.Services.PrimaryKey;
 using wasp.WebApi.Services.PythonEngine;
 using wasp.WebApi.Services.StaticServiceProvider;
@@ -59,18 +60,17 @@ namespace wasp.WebApi
             
             services.Configure<PythonSettings>(_configuration.GetSection("PythonSettings"));
 
-            threadState = services.AddPython(_configuration);
-
+            threadState = services.AddPython(_configuration, new EnvironmentDiscovery());
+            
             services.AddControllers();
 
             services.AddTransient<IDatabaseService, DatabaseService>();
             services.AddTransient<IDataDefinitionService, SqlServerDataDefinitionService>();
             services.AddTransient<IPrimaryKeyService, PrimaryKeyService>();
+            services.AddTransient<IEnvironmentDiscovery, EnvironmentDiscovery>();
 
             services.TryAddSingleton<IHttpContextAccessor, HttpContextAccessor>();
             services.AddSingleton<IServiceProviderProxy, HttpContextServiceProviderProxy>();
-
-            
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.

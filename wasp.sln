@@ -5,8 +5,6 @@ VisualStudioVersion = 16.0.31727.386
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "wasp.Core", "wasp.Core\wasp.Core.csproj", "{B0CD2E58-3B66-49B1-98A0-2CA07AF3CC02}"
 EndProject
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Python.Runtime", "pythonnet-master\src\runtime\Python.Runtime.csproj", "{7E7C2506-0DFD-41A5-9EDD-D578EE235B24}"
-EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "wasp.WebApi", "wasp.WebApi\wasp.WebApi.csproj", "{721E4074-A933-4147-B517-D82E89CA1E9F}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "wasp.Test", "wasp.Test\wasp.Test.csproj", "{CDB5D420-F8AD-4164-BE07-3B8F69D81A6F}"
@@ -16,6 +14,8 @@ EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "IronSphere.Extensions", "..\IronSphere.Extensions\IronSphere.Extensions\IronSphere.Extensions.csproj", "{7AA1F036-1F95-4ECE-8043-27C26208EC27}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "wasp.Website", "wasp.Website\wasp.Website.csproj", "{C67834FF-A20F-41D2-B702-BB6D87D807A5}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Python.Runtime", "..\pythonnet\src\runtime\Python.Runtime.csproj", "{D0ACF8A5-C434-48A2-9981-9F396E2EBA76}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -27,10 +27,6 @@ Global
 		{B0CD2E58-3B66-49B1-98A0-2CA07AF3CC02}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{B0CD2E58-3B66-49B1-98A0-2CA07AF3CC02}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{B0CD2E58-3B66-49B1-98A0-2CA07AF3CC02}.Release|Any CPU.Build.0 = Release|Any CPU
-		{7E7C2506-0DFD-41A5-9EDD-D578EE235B24}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{7E7C2506-0DFD-41A5-9EDD-D578EE235B24}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{7E7C2506-0DFD-41A5-9EDD-D578EE235B24}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{7E7C2506-0DFD-41A5-9EDD-D578EE235B24}.Release|Any CPU.Build.0 = Release|Any CPU
 		{721E4074-A933-4147-B517-D82E89CA1E9F}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
 		{721E4074-A933-4147-B517-D82E89CA1E9F}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{721E4074-A933-4147-B517-D82E89CA1E9F}.Release|Any CPU.ActiveCfg = Release|Any CPU
@@ -51,6 +47,10 @@ Global
 		{C67834FF-A20F-41D2-B702-BB6D87D807A5}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{C67834FF-A20F-41D2-B702-BB6D87D807A5}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{C67834FF-A20F-41D2-B702-BB6D87D807A5}.Release|Any CPU.Build.0 = Release|Any CPU
+		{D0ACF8A5-C434-48A2-9981-9F396E2EBA76}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{D0ACF8A5-C434-48A2-9981-9F396E2EBA76}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{D0ACF8A5-C434-48A2-9981-9F396E2EBA76}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{D0ACF8A5-C434-48A2-9981-9F396E2EBA76}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
